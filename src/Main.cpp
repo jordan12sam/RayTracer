@@ -1,11 +1,9 @@
-
-
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
 
-// settings
+// screen size
 const unsigned int SCR_WIDTH = 640;
 const unsigned int SCR_HEIGHT = 480;
 
@@ -27,10 +25,6 @@ int main()
     }
     glfwMakeContextCurrent(window);
 
-    // glad: load all OpenGL function pointers
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-        return -1;
- 
     // render loop
     while (!glfwWindowShouldClose(window))
     {
