@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-// screen size
+// define screen size
 const unsigned int SCR_WIDTH = 640;
 const unsigned int SCR_HEIGHT = 480;
 
@@ -47,33 +47,35 @@ static unsigned int CreateShader(const std::string& vertexShader, const std::str
     return program;
 }
 
-int main()
-{
-    // glfw: initialise and configure
-    if (!glfwInit())
-        return -1;
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+int main(void){
 
-    // glfw window creation
+    // initialise glfw
+	if(!glfwInit()){
+		std::cout << "ERROR: failed to initialise glfw" << std::endl;
+	}
+
+    // create a window
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "RayTracer", NULL, NULL);
-    if (window == NULL)
-    {
-        glfwTerminate();
-        return -1;
-    }
 
-    glfwMakeContextCurrent(window);
+	if(!window){
+		glfwTerminate();
+		std::cout << "ERROR: failed to create window" << std::endl;
+		return -1;
+	}
 
-    // glew: initialise
-    if (glewInit() != GLEW_OK)
-        return -1;
+    // make the window's context current
+	glfwMakeContextCurrent(window);
 
+    // initialise glew
+	if(glewInit() != GLEW_OK){
+		std::cout << "ERROR: failed to initialise glew" << std::endl;
+	}
+
+    // define a set of 2d points
     float positions[6] = {
-        -0.5f, -0.5f,
+       -0.5f, -0.5f,
         0.5f, -0.5f,
-        0.0f, 0.5f
+        0.0f,  0.5f
     };
 
     // vertex buffer
@@ -85,6 +87,7 @@ int main()
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), 0);
 
+    // shaders
     std::string vertexShader =
       "#version 330 core\n"
       "\n"
@@ -109,8 +112,10 @@ int main()
     // render loop
     while (!glfwWindowShouldClose(window))
     {
-        //render        
+        // clear window
         glClear(GL_COLOR_BUFFER_BIT);
+
+        //draw points
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // swap front and back buffers
@@ -122,8 +127,8 @@ int main()
 
     glDeleteProgram(shader);
 
-    glfwTerminate();
-    return 0;
+	glfwTerminate();
+	return 0;
 }
 
 
