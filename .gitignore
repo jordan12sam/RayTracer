@@ -33,3 +33,6 @@
 
 # Build Folder
 build/
+
+# vscode
+.vscode/
