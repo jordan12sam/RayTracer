@@ -113,11 +113,12 @@ int main(void){
         0, 3, 2
     };
 
-    // vertex buffer
+    // vertex array
     unsigned int vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     
+    // vertex buffer
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -146,6 +147,7 @@ int main(void){
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
     float r = 0.0f;
     float i = 0.05f;
