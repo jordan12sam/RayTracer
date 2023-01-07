@@ -7,6 +7,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cassert>
 
 // define screen size
 const unsigned int SCR_WIDTH = 640;
@@ -85,6 +86,9 @@ int main(void){
     // make the window's context current
 	glfwMakeContextCurrent(window);
 
+    // track monitor refresh rate
+    glfwSwapInterval(1);
+
     // initialise glew
 	if(glewInit() != GLEW_OK){
 		std::cout << "ERROR: failed to initialise glew" << std::endl;
@@ -125,6 +129,13 @@ int main(void){
     unsigned int shader = createShader(vertexShader, fragmentShader);
     glUseProgram(shader);
 
+    // uniform
+    int location = glGetUniformLocation(shader, "uColor");
+    assert(location != -1);
+
+    float r = 0.0f;
+    float i = 0.05f;
+
     // render loop
     while (!glfwWindowShouldClose(window))
     {
@@ -132,7 +143,15 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
 
         //draw points
+        glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
         glWrap(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
+
+        if (r > 1.0f)
+            i = -0.05f;
+        else if (r < 0.0f)
+            i = 0.05f;
+
+        r += i;
 
         // swap front and back buffers
         glfwSwapBuffers(window);
