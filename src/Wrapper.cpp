@@ -1,4 +1,4 @@
-#include "headers/Wrapper.hpp"
+#include "Wrapper.hpp"
 
 void glClearError()
 {

@@ -1,7 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "headers/Wrapper.hpp"
+#include "Wrapper.hpp"
 
 #include <iostream>
 #include <fstream>
