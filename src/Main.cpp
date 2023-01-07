@@ -1,6 +1,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "headers/Wrapper.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -130,7 +132,7 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
 
         //draw points
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glWrap(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));
 
         // swap front and back buffers
         glfwSwapBuffers(window);
