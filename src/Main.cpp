@@ -72,7 +72,12 @@ int main(void){
     // initialise glfw
 	if(!glfwInit()){
 		std::cout << "ERROR: failed to initialise glfw" << std::endl;
+        return -1;
 	}
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // create a window
     GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "RayTracer", NULL, NULL);
@@ -92,6 +97,7 @@ int main(void){
     // initialise glew
 	if(glewInit() != GLEW_OK){
 		std::cout << "ERROR: failed to initialise glew" << std::endl;
+        return -1;
 	}
 
     // define a set of 2d points
@@ -108,10 +114,14 @@ int main(void){
     };
 
     // vertex buffer
+    unsigned int vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)* 6 * 2, positions, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, positions, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
@@ -133,6 +143,10 @@ int main(void){
     int location = glGetUniformLocation(shader, "uColor");
     assert(location != -1);
 
+    glUseProgram(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     float r = 0.0f;
     float i = 0.05f;
 
@@ -142,8 +156,12 @@ int main(void){
         // clear window
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //draw points
+        glUseProgram(shader);
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
+
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+
         glWrap(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         if (r > 1.0f)
