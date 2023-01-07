@@ -132,7 +132,7 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
 
         //draw points
-        glWrap(glDrawElements(GL_TRIANGLES, 6, GL_INT, nullptr));
+        glWrap(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
         // swap front and back buffers
         glfwSwapBuffers(window);
