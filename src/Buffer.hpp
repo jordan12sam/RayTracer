@@ -16,19 +16,19 @@ class Buffer
     public:
         ~Buffer();
 
-        void Bind() const;
-        void Unbind() const;
+        void bind() const;
+        void unbind() const;
 
 };
 
 class IndexBuffer: public Buffer
 {
     private:
-        unsigned int Count;
+        unsigned int count;
         virtual unsigned int getType() const;
     public:
         IndexBuffer(const unsigned int* data, unsigned int count);
-        inline unsigned int GetCount() const;
+        inline unsigned int getCount() const;
 };
 
 class VertexBuffer: public Buffer

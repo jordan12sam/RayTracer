@@ -121,6 +121,7 @@ int main(void){
     glBindVertexArray(vao);
     
     // vertex buffer
+
     VertexBuffer vb(positions, 4 * 2 * sizeof(float));
     
     glEnableVertexAttribArray(0);
@@ -158,7 +159,7 @@ int main(void){
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
 
         glBindVertexArray(vao);
-        ib.Bind();
+        ib.bind();
 
         glWrap(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
