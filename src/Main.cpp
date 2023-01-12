@@ -2,6 +2,9 @@
 #include <GLFW/glfw3.h>
 
 #include "Wrapper.hpp"
+#include "Renderer.hpp"
+#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -119,19 +122,13 @@ int main(void){
     glBindVertexArray(vao);
     
     // vertex buffer
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 4 * 2, positions, GL_STATIC_DRAW);
-
+    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+    
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 
     // index buffer
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)* 6, indicies, GL_STATIC_DRAW);
+    IndexBuffer ib(indicies, 6);
 
     // shaders
     std::string vertexShader = parseShader("../res/shaders/vertex.shader");
@@ -162,7 +159,7 @@ int main(void){
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
 
         glBindVertexArray(vao);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        ib.Bind();
 
         glWrap(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
