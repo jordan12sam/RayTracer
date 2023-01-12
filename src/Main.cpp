@@ -3,8 +3,7 @@
 
 #include "Wrapper.hpp"
 #include "Renderer.hpp"
-#include "VertexBuffer.hpp"
-#include "IndexBuffer.hpp"
+#include "Buffer.hpp"
 
 #include <iostream>
 #include <fstream>

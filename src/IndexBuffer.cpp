@@ -1,25 +1,20 @@
-#include "IndexBuffer.hpp"
+#include "Buffer.hpp"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count)
     : Count(count)
 {
+    type = getType();
     glWrap(glGenBuffers(1, &RendererID));
     this->Bind();
-    glWrap(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
-
+    glWrap(glBufferData(type, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
 }
 
-IndexBuffer::~IndexBuffer()
+unsigned int IndexBuffer::getType() const
 {
-    glWrap(glDeleteBuffers(1, &RendererID));
+    return GL_ELEMENT_ARRAY_BUFFER;
 }
 
-void IndexBuffer::Bind() const
+inline unsigned int IndexBuffer::GetCount() const
 {
-    glWrap(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, RendererID));
-}
-
-void IndexBuffer::Unbind() const
-{
-    glWrap(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+    return Count;
 }

@@ -1,24 +1,14 @@
-#include "VertexBuffer.hpp"
+#include "Buffer.hpp"
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size)
 {
+    type = getType();
     glWrap(glGenBuffers(1, &RendererID));
     this->Bind();
-    glWrap(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
-
+    glWrap(glBufferData(type, size, data, GL_STATIC_DRAW));
 }
 
-VertexBuffer::~VertexBuffer()
+unsigned int VertexBuffer::getType() const
 {
-    glWrap(glDeleteBuffers(1, &RendererID));
-}
-
-void VertexBuffer::Bind() const
-{
-    glWrap(glBindBuffer(GL_ARRAY_BUFFER, RendererID));
-}
-
-void VertexBuffer::Unbind() const
-{
-    glWrap(glBindBuffer(GL_ARRAY_BUFFER, 0));
+    return GL_ARRAY_BUFFER;
 }
