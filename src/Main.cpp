@@ -4,6 +4,7 @@
 #include "Wrapper.hpp"
 #include "Renderer.hpp"
 #include "Buffer.hpp"
+#include "VertexArray.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -121,11 +122,11 @@ int main(void){
     glBindVertexArray(vao);
     
     // vertex buffer
-
+    VertexArray va;
     VertexBuffer vb(positions, 4 * 2 * sizeof(float));
-    
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+    VertexBufferLayout layout;
+    layout.push(GL_FLOAT, 2);
+    va.addBuffer(vb, layout);
 
     // index buffer
     IndexBuffer ib(indicies, 6);
@@ -158,7 +159,7 @@ int main(void){
         glUseProgram(shader);
         glUniform4f(location, r, 0.3f, 0.8f, 1.0f);
 
-        glBindVertexArray(vao);
+        va.bind();
         ib.bind();
 
         glWrap(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
