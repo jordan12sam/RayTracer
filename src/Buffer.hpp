@@ -10,7 +10,7 @@
 class Buffer
 {
     protected:
-        unsigned int RendererID;
+        unsigned int rendererID;
         unsigned int type;
         virtual unsigned int getType() const = 0;
     public:

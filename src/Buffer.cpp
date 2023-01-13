@@ -2,12 +2,12 @@
 
 Buffer::~Buffer()
 {
-    glWrap(glDeleteBuffers(1, &RendererID));
+    glWrap(glDeleteBuffers(1, &rendererID));
 }
 
 void Buffer::bind() const
 {
-    glWrap(glBindBuffer(type, RendererID));
+    glWrap(glBindBuffer(type, rendererID));
 }
 
 void Buffer::unbind() const
