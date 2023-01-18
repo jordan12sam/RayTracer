@@ -76,7 +76,7 @@ void Shader::setUniform4f(const std::string& name, float v0, float v1, float v2,
 unsigned int Shader::getUniformLocation(const std::string& name)
 {
     glWrap(int location = glGetUniformLocation(rendererID, name.c_str()));
-    if (location != -1)
+    if (location == -1)
         std::cout << "WARNING: Uniform " << name << " has location -1!" << std:: endl;
     return location;
 }
