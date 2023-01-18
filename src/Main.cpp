@@ -62,30 +62,23 @@ int main(void){
         0, 1, 2,
         0, 3, 2
     };
-
-    // vertex array
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
     
-    // vertex buffer
-    VertexArray va;
     VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+
     VertexBufferLayout layout;
     layout.push(GL_FLOAT, 2);
+
+    VertexArray va;
     va.addBuffer(vb, layout);
 
-    // index buffer
     IndexBuffer ib(indicies, 6);
 
-    // shaders
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
-    shader.bind();
 
     shader.unbind();
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    vb.unbind();
+    ib.unbind();
+    va.unbind();
 
     float r = 0.0f;
     float i = 0.05f;
