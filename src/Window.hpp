@@ -13,12 +13,11 @@
 class Window
 {
     private:
-    GLFWwindow* window;
+        GLFWwindow* window;
 
     public:
-    Window(const int width, const int height, char* title);
-    ~Window();
+        Window(const int width, const int height, char* title);
+        ~Window();
 
-    bool isOpen();
-
+        bool isOpen();
 };
