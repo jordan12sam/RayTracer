@@ -6,9 +6,7 @@
 #include "Wrapper.hpp"
 
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <sstream>
 
 class Window
 {
