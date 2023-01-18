@@ -3,6 +3,7 @@
 
 #include "Wrapper.hpp"
 #include "Renderer.hpp"
+#include "Window.hpp"
 #include "Buffer.hpp"
 #include "VertexArray.hpp"
 #include "Shader.hpp"
@@ -19,30 +20,7 @@ const unsigned int SCR_HEIGHT = 480;
 
 int main(void){
 
-    // initialise glfw
-	if(!glfwInit()){
-		std::cout << "ERROR: failed to initialise glfw" << std::endl;
-        return -1;
-	}
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // create a window
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "RayTracer", NULL, NULL);
-
-	if(!window){
-		glfwTerminate();
-		std::cout << "ERROR: failed to create window" << std::endl;
-		return -1;
-	}
-
-    // make the window's context current
-	glfwMakeContextCurrent(window);
-
-    // track monitor refresh rate
-    glfwSwapInterval(1);
+    Window window(SCR_WIDTH, SCR_HEIGHT, (char*)"RayTracer");
 
     // initialise glew
 	if(glewInit() != GLEW_OK){
@@ -84,7 +62,7 @@ int main(void){
     float i = 0.05f;
 
     // render loop
-    while (!glfwWindowShouldClose(window))
+    while (window.isOpen())
     {
         // clear window
         glClear(GL_COLOR_BUFFER_BIT);
@@ -103,15 +81,8 @@ int main(void){
             i = 0.05f;
 
         r += i;
-
-        // swap front and back buffers
-        glfwSwapBuffers(window);
-
-        // poll for process events
-        glfwPollEvents();
     }
 
-	glfwTerminate();
 	return 0;
 }
 
