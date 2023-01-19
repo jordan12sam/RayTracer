@@ -14,7 +14,7 @@ unsigned int IndexBuffer::getType() const
     return GL_ELEMENT_ARRAY_BUFFER;
 }
 
-inline unsigned int IndexBuffer::getCount() const
+unsigned int IndexBuffer::getCount() const
 {
     return count;
 }

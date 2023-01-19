@@ -28,7 +28,7 @@ class IndexBuffer: public Buffer
         virtual unsigned int getType() const;
     public:
         IndexBuffer(const unsigned int* data, unsigned int count);
-        inline unsigned int getCount() const;
+        unsigned int getCount() const;
 };
 
 class VertexBuffer: public Buffer
