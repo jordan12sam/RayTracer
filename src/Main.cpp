@@ -44,6 +44,9 @@ int main(void){
         0, 1, 2,
         0, 3, 2
     };
+
+    glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    glWrap(glEnable(GL_BLEND));
     
     VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
