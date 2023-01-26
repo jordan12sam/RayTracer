@@ -73,7 +73,18 @@ void Shader::setUniform4f(const std::string& name, float v0, float v1, float v2,
     glWrap(glUniform4f(getUniformLocation(name), v0, v1, v2, v3));
 }
 
-unsigned int Shader::getUniformLocation(const std::string& name)
+void Shader::setUniform1f(const std::string& name, float value)
+{
+    glWrap(glUniform1f(getUniformLocation(name), value));
+}
+
+void Shader::setUniform1i(const std::string& name, int value)
+{
+    glWrap(glUniform1i(getUniformLocation(name), value));
+}
+
+
+int Shader::getUniformLocation(const std::string& name)
 {
     glWrap(int location = glGetUniformLocation(rendererID, name.c_str()));
     if (location == -1)

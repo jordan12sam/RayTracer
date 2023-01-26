@@ -1,12 +1,16 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "./vendor/stb_image/stb_image.h"
+
 #include "Wrapper.hpp"
 #include "Renderer.hpp"
 #include "Window.hpp"
 #include "Buffer.hpp"
 #include "VertexArray.hpp"
 #include "Shader.hpp"
+#include "Texture.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -30,10 +34,10 @@ int main(void){
 
     // define a set of 2d points
     float positions[] = {
-        -0.5f, -0.5f,
-        0.5f, -0.5f,
-        0.5f, 0.5f,
-        -0.5f, 0.5f
+        -0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0.0f, 1.0f
     };
 
     unsigned int indicies[] = {
@@ -41,9 +45,10 @@ int main(void){
         0, 3, 2
     };
     
-    VertexBuffer vb(positions, 4 * 2 * sizeof(float));
+    VertexBuffer vb(positions, 4 * 4 * sizeof(float));
 
     VertexBufferLayout layout;
+    layout.push(GL_FLOAT, 2);
     layout.push(GL_FLOAT, 2);
 
     VertexArray va;
@@ -52,6 +57,11 @@ int main(void){
     IndexBuffer ib(indicies, 6);
 
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
+
+    Texture texture("../res/textures/wood.png");
+    texture.bind();
+    shader.bind();
+    shader.setUniform1i("uTexture", 0);
 
     shader.unbind();
     vb.unbind();
