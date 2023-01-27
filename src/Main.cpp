@@ -21,9 +21,9 @@
 #include <cassert>
 
 // define screen size
-const unsigned int SCR_WIDTH = 1024;
-const unsigned int SCR_HEIGHT = 1024;
-const float AR = SCR_WIDTH/SCR_HEIGHT;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
+const float AR = (float)SCR_WIDTH/(float)SCR_HEIGHT;
 
 int main(void){
 
