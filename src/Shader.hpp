@@ -3,6 +3,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "./vendor/glm/glm.hpp"
+#include "./vendor/glm/gtc/matrix_transform.hpp"
+
 #include "Wrapper.hpp"
 
 #include <iostream>
@@ -31,6 +34,7 @@ class Shader
     void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
     void setUniform1f(const std::string& name, float value);
     void setUniform1i(const std::string& name, int value);
+    void setUniformMat4f(const std::string& name, const glm::mat4& matrix);
 
 
 };

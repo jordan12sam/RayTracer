@@ -3,6 +3,8 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "./vendor/stb_image/stb_image.h"
+#include "./vendor/glm/glm.hpp"
+#include "./vendor/glm/gtc/matrix_transform.hpp"
 
 #include "Wrapper.hpp"
 #include "Renderer.hpp"
@@ -19,8 +21,9 @@
 #include <cassert>
 
 // define screen size
-const unsigned int SCR_WIDTH = 640;
-const unsigned int SCR_HEIGHT = 480;
+const unsigned int SCR_WIDTH = 1024;
+const unsigned int SCR_HEIGHT = 1024;
+const float AR = SCR_WIDTH/SCR_HEIGHT;
 
 int main(void){
 
@@ -59,12 +62,18 @@ int main(void){
 
     IndexBuffer ib(indicies, 6);
 
+    float scale = 1.0f;
+    glm::mat4 proj = glm::ortho(-1.0f * AR * scale, AR * scale,
+                                -1.0f * scale, 1.0f * scale, 
+                                -1.0f * scale, 1.0f * scale);
+
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
+    shader.bind();
+    shader.setUniform1i("uTexture", 0);
+    shader.setUniformMat4f("uMVP", proj);
 
     Texture texture("../res/textures/wood.png");
     texture.bind();
-    shader.bind();
-    shader.setUniform1i("uTexture", 0);
 
     shader.unbind();
     vb.unbind();
