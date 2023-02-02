@@ -1,9 +1,3 @@
 # RayTracer
-
-To build the repo, run from the project folder:
-
-    ./build.sh && cd build && make && cd ..
-
-Run the executable in /build
-
-    build/RayTracer
+To build the project, first run build.sh
+The run the executable at ./build/debug/RayTracer.exe

@@ -1,3 +1,6 @@
 #!/bin/sh
 
-cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug
+mkdir build
+cd build
+cmake ..
+cmake --build .

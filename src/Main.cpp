@@ -1,4 +1,4 @@
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -29,11 +29,11 @@ int main(void){
 
     Window window(SCR_WIDTH, SCR_HEIGHT, (char*)"RayTracer");
 
-    // initialise glew
-	if(glewInit() != GLEW_OK){
-		std::cout << "ERROR: failed to initialise glew" << std::endl;
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout << "Failed to initialize GLAD\n";
         return -1;
-	}
+    }
 
     // define a set of 2d points
     float positions[] = {
@@ -105,5 +105,4 @@ int main(void){
 
 	return 0;
 }
-
 
