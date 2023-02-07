@@ -37,10 +37,10 @@ int main(void){
 
     // define a set of 2d points
     float positions[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f,
-        0.5f, -0.5f, 1.0f, 0.0f,
-        0.5f, 0.5f, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0.0f, 1.0f
+        100.0f, 100.0f, 0.0f, 0.0f,
+        200.0f, 100.0f, 1.0f, 0.0f,
+        200.0f, 200.0f, 1.0f, 1.0f,
+        100.0f, 200.0f, 0.0f, 1.0f
     };
 
     unsigned int indicies[] = {
@@ -62,10 +62,9 @@ int main(void){
 
     IndexBuffer ib(indicies, 6);
 
-    float scale = 1.0f;
-    glm::mat4 proj = glm::ortho(-1.0f * AR * scale, AR * scale,
-                                -1.0f * scale, 1.0f * scale, 
-                                -1.0f * scale, 1.0f * scale);
+    glm::mat4 proj = glm::ortho(0.0f, (float)SCR_WIDTH,
+                                0.0f, (float)SCR_HEIGHT, 
+                                -1.0f, 1.0f);
 
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
