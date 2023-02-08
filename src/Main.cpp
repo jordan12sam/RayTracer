@@ -66,10 +66,16 @@ int main(void){
                                 0.0f, (float)SCR_HEIGHT, 
                                 -1.0f, 1.0f);
 
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(500, 0, 0));
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(-200, 200, 0));
+
+    glm::mat4 mvp = proj * view * model;
+    
+
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
     shader.setUniform1i("uTexture", 0);
-    shader.setUniformMat4f("uMVP", proj);
+    shader.setUniformMat4f("uMVP", mvp);
 
     Texture texture("../res/textures/wood.png");
     texture.bind();
