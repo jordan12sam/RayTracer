@@ -33,6 +33,7 @@
 
 # Build Folder
 build/
+external/
 
 # vscode
 .vscode/

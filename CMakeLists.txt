@@ -1,71 +1,69 @@
-cmake_minimum_required(VERSION 3.11 FATAL_ERROR)
-project(RayTracer CXX)
+cmake_minimum_required(VERSION 3.12)
 
-#===========================================================================================
-# OPTIONAL LIBRARiES
-#
-# The following libraries can be pulled down and added to the project by turnning the
-# desired options on. Open an issue for additional default support.
-# See: https://github.com/Hoshiningen/OpenGL-Template/issues
+project(MyProject)
 
-set(ENABLE_ASSIMP   OFF CACHE BOOL "Add Open Asset Import Library (assimp) to the project" FORCE)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#===========================================================================================
-# GLAD CONFIGURATION
-#
-# Configure GLAD loader generation variables (lines below pulled from the GLAD top-level
-# CMakeLists.txt file, with slight modifications.
-# Refer to https://github.com/Dav1dde/glad for more information)
+set(EXTERNAL_DIR "${CMAKE_SOURCE_DIR}/external")
 
-set(GLAD_OUT_DIR        "${CMAKE_CURRENT_BINARY_DIR}" CACHE STRING "Output directory" FORCE)
-set(GLAD_PROFILE        "core" CACHE STRING "OpenGL profile" FORCE)
-set(GLAD_API            "gl=3.3" CACHE STRING "API type/version pairs, like \"gl=3.2,gles=\", no version means latest" FORCE)
-set(GLAD_GENERATOR      "c" CACHE STRING "Language to generate the binding for" FORCE)
-set(GLAD_EXTENSIONS     "" CACHE STRING "Path to extensions file or comma separated list of extensions, if missing all extensions are included" FORCE)
-set(GLAD_SPEC           "gl" CACHE STRING "Name of the spec" FORCE)
-set(GLAD_ALL_EXTENSIONS OFF CACHE BOOL "Include all extensions instead of those specified by GLAD_EXTENSIONS" FORCE)
-set(GLAD_NO_LOADER      OFF CACHE BOOL "No loader" FORCE)
-set(GLAD_REPRODUCIBLE   OFF CACHE BOOL "Reproducible build" FORCE)
+# Use FetchContent to download GLAD library
+include(FetchContent)
+FetchContent_Declare(
+    glad
+    GIT_REPOSITORY https://github.com/Dav1dde/glad.git
+    GIT_TAG v0.1.34
+)
+FetchContent_MakeAvailable(glad)
 
-#===========================================================================================
+# Use FetchContent to download GLFW library
+FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG 3.3.4
+)
+FetchContent_MakeAvailable(glfw)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+# Use FetchContent to download GLM library
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG 0.9.9.8
+)
+FetchContent_MakeAvailable(glm)
 
-# Set directory paths
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-set(CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# Download imgui files
+FetchContent_Declare(
+    ImGUI
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG        v1.84.2
+)
+FetchContent_MakeAvailable(imgui)
 
-file(GLOB sources CONFIGURE_DEPENDS ${SOURCE_DIR}/*.h ${SOURCE_DIR}/*.hpp ${SOURCE_DIR}/*.cpp)
+file(DOWNLOAD
+    https://raw.githubusercontent.com/ocornut/imgui/c206a193737811193a0b48ef2d35fe028fa0996e/examples/README.txt
+    ${EXTERNAL_DIR}/imgui/readme.txt)
 
-add_executable(RayTracer ${sources} ${includes})
+# Download STB_IMAGE
+file(DOWNLOAD
+    https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
+    ${EXTERNAL_DIR}/stb/stb_image.h)
 
-# Perform dependency linkage
-include(${CMAKE_DIR}/LinkGLFW.cmake)
-LinkGLFW(RayTracer PRIVATE)
 
-include(${CMAKE_DIR}/LinkGLAD.cmake)
-LinkGLAD(RayTracer PRIVATE)
+# Add the executable
+file(GLOB all_SRCS
+        "${PROJECT_SOURCE_DIR}/src/*.cpp"
+        "${PROJECT_SOURCE_DIR}/src/*.hpp"
+        "${EXTERNAL_DIR}/stb/*.h"
+        "${EXTERNAL_DIR}/stb/*.cpp"
+        "${EXTERNAL_DIR}/imgui/*.h"
+        "${EXTERNAL_DIR}/imgui/*.cpp"
+        ${IMGUI_SRCS}
+        )
+add_executable(MyExecutable ${all_SRCS})
 
-find_package(OpenGL REQUIRED)
-if (OpenGL_FOUND)
-    target_include_directories(RayTracer PRIVATE ${OPENGL_INCLDUE_DIRS})
-    target_link_libraries(RayTracer PRIVATE ${OPENGL_LIBRARIES})
-else()
-    message(FATAL_ERROR "OpenGL was not found on the system")
-endif()
+# Link the executable to libraries
+target_link_directories(MyExecutable PRIVATE ${EXTERNAL_DIR}/stb ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends ${glad_SOURCE_DIR})
+target_link_libraries(MyExecutable PRIVATE glad ${GLFW_LIBRARIES} glm )
 
-# Handle the optional libraries
-if (${ENABLE_ASSIMP})
-    include(${CMAKE_DIR}/LinkASSIMP.cmake)
-    LinkASSIMP(RayTracer PRIVATE)
-endif()
-
-# Enable C++17
-set_target_properties(RayTracer PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO)
-
-# Set project folders
-set_target_properties(RayTracer PROPERTIES FOLDER ${PROJECT_NAME})
+target_include_directories(MyExecutable PRIVATE ${glad_SOURCE_DIR}/include ${glfw_SOURCE_DIR}/include ${glm_SOURCE_DIR} ${imgui_SOURCE_DIR} ${EXTERNAL_DIR})
