@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(MyProject)
+project(RayTracer)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(EXTERNAL_DIR "${CMAKE_SOURCE_DIR}/external")
+set(EXTERNAL_DIR ${CMAKE_SOURCE_DIR}/external)
 
 # Use FetchContent to download GLAD library
 include(FetchContent)
@@ -14,7 +14,9 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/Dav1dde/glad.git
     GIT_TAG v0.1.34
 )
-FetchContent_MakeAvailable(glad)
+FetchContent_GetProperties(glad)
+FetchContent_Populate(glad)
+add_subdirectory(${glad_SOURCE_DIR} ${glad_BINARY_DIR})
 
 # Use FetchContent to download GLFW library
 FetchContent_Declare(
@@ -22,7 +24,9 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/glfw/glfw.git
     GIT_TAG 3.3.4
 )
-FetchContent_MakeAvailable(glfw)
+FetchContent_GetProperties(glfw)
+FetchContent_Populate(glfw)
+add_subdirectory(${glfw_SOURCE_DIR} ${glfw_BINARY_DIR})
 
 # Use FetchContent to download GLM library
 FetchContent_Declare(
@@ -30,40 +34,67 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/g-truc/glm.git
     GIT_TAG 0.9.9.8
 )
-FetchContent_MakeAvailable(glm)
+FetchContent_GetProperties(glm)
+FetchContent_Populate(glm)
+add_subdirectory(${glm_SOURCE_DIR} ${glm_BINARY_DIR})
 
-# Download imgui files
+# Download STB_IMAGE
 FetchContent_Declare(
-    ImGUI
+    stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+)
+FetchContent_GetProperties(stb)
+FetchContent_Populate(stb)
+
+# Build imgui library
+FetchContent_Declare(
+    imgui
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
     GIT_TAG        v1.84.2
 )
-FetchContent_MakeAvailable(imgui)
-
-file(DOWNLOAD
-    https://raw.githubusercontent.com/ocornut/imgui/c206a193737811193a0b48ef2d35fe028fa0996e/examples/README.txt
-    ${EXTERNAL_DIR}/imgui/readme.txt)
-
-# Download STB_IMAGE
-file(DOWNLOAD
-    https://raw.githubusercontent.com/nothings/stb/master/stb_image.h
-    ${EXTERNAL_DIR}/stb/stb_image.h)
+FetchContent_GetProperties(imgui)
+FetchContent_Populate(imgui)
+add_library(IMGUI)
+target_sources(IMGUI 
+    PRIVATE
+        ${imgui_SOURCE_DIR}/imgui.cpp
+        ${imgui_SOURCE_DIR}/imgui_draw.cpp
+        ${imgui_SOURCE_DIR}/imgui_tables.cpp
+        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+        ${imgui_SOURCE_DIR}/imgui_demo.cpp
+    PRIVATE
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
+        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
+target_include_directories(IMGUI
+    PUBLIC  ${imgui_SOURCE_DIR}
+    PUBLIC  ${imgui_SOURCE_DIR}/backends)
+target_link_libraries(IMGUI
+    PRIVATE glad
+    PRIVATE glfw)
 
 
 # Add the executable
 file(GLOB all_SRCS
         "${PROJECT_SOURCE_DIR}/src/*.cpp"
         "${PROJECT_SOURCE_DIR}/src/*.hpp"
-        "${EXTERNAL_DIR}/stb/*.h"
-        "${EXTERNAL_DIR}/stb/*.cpp"
-        "${EXTERNAL_DIR}/imgui/*.h"
-        "${EXTERNAL_DIR}/imgui/*.cpp"
-        ${IMGUI_SRCS}
         )
-add_executable(MyExecutable ${all_SRCS})
+add_executable(RayTracer ${all_SRCS})
 
 # Link the executable to libraries
-target_link_directories(MyExecutable PRIVATE ${EXTERNAL_DIR}/stb ${imgui_SOURCE_DIR} ${imgui_SOURCE_DIR}/backends ${glad_SOURCE_DIR})
-target_link_libraries(MyExecutable PRIVATE glad ${GLFW_LIBRARIES} glm )
+target_link_libraries(RayTracer 
+    PRIVATE glad
+    PRIVATE glfw
+    PRIVATE glm
+    PRIVATE IMGUI)
 
-target_include_directories(MyExecutable PRIVATE ${glad_SOURCE_DIR}/include ${glfw_SOURCE_DIR}/include ${glm_SOURCE_DIR} ${imgui_SOURCE_DIR} ${EXTERNAL_DIR})
+target_include_directories(RayTracer
+    PRIVATE ${glad_SOURCE_DIR}/include
+    PRIVATE ${glfw_SOURCE_DIR}/include
+    PRIVATE ${glm_SOURCE_DIR}
+    PRIVATE ${stb_SOURCE_DIR}
+    PRIVATE ${EXTERNAL_DIR})
+
+add_dependencies(RayTracer 
+    glad
+    glfw
+    glm)

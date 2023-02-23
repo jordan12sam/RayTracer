@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <imgui.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include <stb_image.h>
 
 #include "Wrapper.hpp"
 #include "Renderer.hpp"
