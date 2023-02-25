@@ -67,15 +67,10 @@ int main(void){
                                 -1.0f, 1.0f);
 
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(500, 0, 0));
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(-200, 200, 0));
-
-    glm::mat4 mvp = proj * view * model;
     
-
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
     shader.setUniform1i("uTexture", 0);
-    shader.setUniformMat4f("uMVP", mvp);
 
     Texture texture("../res/textures/wood.png");
     texture.bind();
@@ -99,8 +94,15 @@ int main(void){
         shader.bind();
         shader.setUniform4f("uColor", base_colour.x, base_colour.y, base_colour.z, base_colour.w);
 
+        static float f = 1.0f;
+        static glm::vec3 translation(0, 0, 0);
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+        glm::mat4 mvp = proj * view * model;
+        shader.setUniformMat4f("uMVP", mvp);
+
         renderer.draw(va, ib, shader);
 
+        ImGui::SliderFloat3("Translation", &translation.x, -1280.0f, 1280.0f);
         ImGui::ColorEdit4("clear color", (float*)&base_colour);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
