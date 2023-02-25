@@ -37,10 +37,10 @@ int main(void){
 
     // define a set of 2d positions + 2d texture coordinates
     float positions[] = {
-        0.0f, 0.0f, 0.0f, 0.0f,
-        150.0f, 0.0f, 1.0f, 0.0f,
-        150.0f, 150.0f, 1.0f, 1.0f,
-        0.0f, 150.0f, 0.0f, 1.0f
+        -0.5f, -0.5f, 0.0f, 0.0f,
+        0.5f, -0.5f, 1.0f, 0.0f,
+        0.5f, 0.5f, 1.0f, 1.0f,
+        -0.5f, 0.5f, 0.0f, 1.0f
     };
 
     unsigned int indicies[] = {
@@ -62,11 +62,13 @@ int main(void){
 
     IndexBuffer ib(indicies, 6);
 
-    glm::mat4 proj = glm::ortho(0.0f, (float)SCR_WIDTH,
-                                0.0f, (float)SCR_HEIGHT, 
-                                -500.0f, 500.0f);
+    glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100.0f);
 
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(500, 0, 0));
+    glm::mat4 view = glm::lookAt(
+    glm::vec3(0,0,5), // Camera is at (0,0,5), in World Space
+    glm::vec3(0,0,0), // and looks at the origin
+    glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
+    ); 
     
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
@@ -91,8 +93,8 @@ int main(void){
         renderer.clear();
 
         static glm::vec3 translationA(0, 0, 0);
-        static glm::vec3 translationB(200, 200, 0);
-        static glm::vec3 translationC(400, 400, 0);
+        static glm::vec3 translationB(1.5, 1.5, 0);
+        static glm::vec3 translationC(-3, -1.2, 0);
 
         static ImVec4 colourA = ImVec4(1.0f, 0.0f, 0.0f, 1.00f);
         {        
@@ -104,7 +106,7 @@ int main(void){
             renderer.draw(va, ib, shader);
         }
 
-        ImGui::SliderFloat3("TranslationA", &translationA.x, -1280.0f, 1280.0f);
+        ImGui::SliderFloat3("TranslationA", &translationA.x, -10.0f, 10.0f);
         ImGui::ColorEdit4("ColourA", (float*)&colourA);
         ImGui::Text("");
 
@@ -118,7 +120,7 @@ int main(void){
             renderer.draw(va, ib, shader);
         }
 
-        ImGui::SliderFloat3("TranslationB", &translationB.x, -1280.0f, 1280.0f);
+        ImGui::SliderFloat3("TranslationB", &translationB.x, -10.0f, 10.0f);
         ImGui::ColorEdit4("ColourB", (float*)&colourB);
         ImGui::Text("");
 
@@ -132,7 +134,7 @@ int main(void){
             renderer.draw(va, ib, shader);
         }
 
-        ImGui::SliderFloat3("TranslationC", &translationC.x, -1280.0f, 1280.0f);
+        ImGui::SliderFloat3("TranslationC", &translationC.x, -10.0f, 10.0f);
         ImGui::ColorEdit4("ColourC", (float*)&colourC);
         ImGui::Text("");
         
