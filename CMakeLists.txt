@@ -50,7 +50,7 @@ FetchContent_Populate(stb)
 FetchContent_Declare(
     imgui
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG        v1.84.2
+    GIT_TAG        v1.60
 )
 FetchContent_GetProperties(imgui)
 FetchContent_Populate(imgui)
@@ -59,12 +59,9 @@ target_sources(IMGUI
     PRIVATE
         ${imgui_SOURCE_DIR}/imgui.cpp
         ${imgui_SOURCE_DIR}/imgui_draw.cpp
-        ${imgui_SOURCE_DIR}/imgui_tables.cpp
-        ${imgui_SOURCE_DIR}/imgui_widgets.cpp
         ${imgui_SOURCE_DIR}/imgui_demo.cpp
     PRIVATE
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-        ${imgui_SOURCE_DIR}/backends/imgui_impl_glfw.cpp)
+        ${imgui_SOURCE_DIR}/examples/opengl3_example/imgui_impl_glfw_gl3.cpp)
 target_include_directories(IMGUI
     PUBLIC  ${imgui_SOURCE_DIR}
     PUBLIC  ${imgui_SOURCE_DIR}/backends)

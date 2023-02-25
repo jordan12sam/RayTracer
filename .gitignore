@@ -31,9 +31,11 @@
 *.out
 *.app
 
+# imgui.ini
+src/imgui.ini
+
 # Build Folder
 build/
-external/
 
 # vscode
 .vscode/
