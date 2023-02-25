@@ -94,7 +94,7 @@ int main(void){
         static glm::vec3 translationB(200, 200, 0);
         static glm::vec3 translationC(400, 400, 0);
 
-        static ImVec4 colourA = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        static ImVec4 colourA = ImVec4(1.0f, 0.0f, 0.0f, 1.00f);
         {        
             shader.bind();
             shader.setUniform4f("uColor", colourA.x, colourA.y, colourA.z, colourA.w);
@@ -106,8 +106,9 @@ int main(void){
 
         ImGui::SliderFloat3("TranslationA", &translationA.x, -1280.0f, 1280.0f);
         ImGui::ColorEdit4("ColourA", (float*)&colourA);
+        ImGui::Text("");
 
-        static ImVec4 colourB = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        static ImVec4 colourB = ImVec4(0.0f, 1.0f, 0.0f, 1.00f);
         {        
             shader.bind();
             shader.setUniform4f("uColor", colourB.x, colourB.y, colourB.z, colourB.w);
@@ -119,8 +120,9 @@ int main(void){
 
         ImGui::SliderFloat3("TranslationB", &translationB.x, -1280.0f, 1280.0f);
         ImGui::ColorEdit4("ColourB", (float*)&colourB);
+        ImGui::Text("");
 
-        static ImVec4 colourC = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        static ImVec4 colourC = ImVec4(0.0f, 0.0f, 1.0f, 1.00f);
         {        
             shader.bind();
             shader.setUniform4f("uColor", colourC.x, colourC.y, colourC.z, colourC.w);
@@ -132,6 +134,7 @@ int main(void){
 
         ImGui::SliderFloat3("TranslationC", &translationC.x, -1280.0f, 1280.0f);
         ImGui::ColorEdit4("ColourC", (float*)&colourC);
+        ImGui::Text("");
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
