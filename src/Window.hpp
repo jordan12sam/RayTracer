@@ -13,9 +13,9 @@
 class Window
 {
     private:
-        GLFWwindow* window;
-
     public:
+        GLFWwindow* window;
+        
         Window(const int width, const int height, char* title);
         ~Window();
 

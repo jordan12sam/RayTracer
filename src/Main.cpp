@@ -35,12 +35,12 @@ int main(void){
         return -1;
     }
 
-    // define a set of 2d points
+    // define a set of 2d positions + 2d texture coordinates
     float positions[] = {
-        100.0f, 100.0f, 0.0f, 0.0f,
-        200.0f, 100.0f, 1.0f, 0.0f,
-        200.0f, 200.0f, 1.0f, 1.0f,
-        100.0f, 200.0f, 0.0f, 1.0f
+        0.0f, 0.0f, 0.0f, 0.0f,
+        300.0f, 0.0f, 1.0f, 0.0f,
+        300.0f, 300.0f, 1.0f, 1.0f,
+        0.0f, 300.0f, 0.0f, 1.0f
     };
 
     unsigned int indicies[] = {
@@ -87,25 +87,27 @@ int main(void){
 
     Renderer renderer;
 
-    float r = 0.0f;
-    float i = 0.05f;
-
     // render loop
     while (window.isOpen())
     {
-        renderer.clear();
+        glfwPollEvents();
+        ImGui_ImplGlfwGL3_NewFrame();
 
+        renderer.clear();
+        
+        static ImVec4 base_colour = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
         shader.bind();
-        shader.setUniform4f("uColor", r, 0.3f, 0.8f, 1.0f);
+        shader.setUniform4f("uColor", base_colour.x, base_colour.y, base_colour.z, base_colour.w);
 
         renderer.draw(va, ib, shader);
 
-        if (r > 1.0f)
-            i = -0.05f;
-        else if (r < 0.0f)
-            i = 0.05f;
+        ImGui::ColorEdit4("clear color", (float*)&base_colour);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
-        r += i;
+        ImGui::Render();
+        ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+
+        glfwSwapBuffers(window.window);
     }
 
 	return 0;

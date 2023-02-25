@@ -12,10 +12,14 @@ Window::Window(const int width, const int height, char* title)
 
     window = glfwCreateWindow(width, height, title, NULL, NULL);
 
-    	if(!window){
+    if(!window){
 		glfwTerminate();
 		std::cout << "WARNING: failed to create window" << std::endl;
 	}
+
+    ImGui::CreateContext();
+    ImGui_ImplGlfwGL3_Init(window, true);
+    ImGui::StyleColorsDark();
 
 	glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
@@ -23,12 +27,12 @@ Window::Window(const int width, const int height, char* title)
 
 Window::~Window()
 {
+    ImGui_ImplGlfwGL3_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
 };
 
 bool Window::isOpen()
 {
-    glfwSwapBuffers(window);
-    glfwPollEvents();
     return !glfwWindowShouldClose(window);
 };
