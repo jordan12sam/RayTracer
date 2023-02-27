@@ -13,11 +13,15 @@
 class Window
 {
     private:
-    public:
         GLFWwindow* window;
-        
+        bool keys[350] = {false};
+        static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    public:
         Window(const int width, const int height, char* title);
         ~Window();
 
         bool isOpen();
+
+        inline GLFWwindow* get() {return window;}
+        inline bool* getKeys() {return keys;}
 };

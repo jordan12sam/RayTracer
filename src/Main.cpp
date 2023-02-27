@@ -13,6 +13,7 @@
 #include "VertexArray.hpp"
 #include "Shader.hpp"
 #include "Texture.hpp"
+#include "Camera.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -35,12 +36,14 @@ int main(void){
         return -1;
     }
 
+    Camera camera;
+
     // define a set of 2d positions + 2d texture coordinates
     float positions[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f,
-        0.5f, -0.5f, 1.0f, 0.0f,
-        0.5f, 0.5f, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0.0f, 1.0f
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
     };
 
     unsigned int indicies[] = {
@@ -51,24 +54,16 @@ int main(void){
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     glWrap(glEnable(GL_BLEND));
     
-    VertexBuffer vb(positions, 4 * 4 * sizeof(float));
+    VertexBuffer vb(positions, 5 * 4 * sizeof(float));
 
     VertexBufferLayout layout;
-    layout.push(GL_FLOAT, 2);
+    layout.push(GL_FLOAT, 3);
     layout.push(GL_FLOAT, 2);
 
     VertexArray va;
     va.addBuffer(vb, layout);
 
     IndexBuffer ib(indicies, 6);
-
-    glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100.0f);
-
-    glm::mat4 view = glm::lookAt(
-    glm::vec3(0,0,5), // Camera is at (0,0,5), in World Space
-    glm::vec3(0,0,0), // and looks at the origin
-    glm::vec3(0,1,0)  // Head is up (set to 0,-1,0 to look upside-down)
-    ); 
     
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
@@ -87,63 +82,69 @@ int main(void){
     // render loop
     while (window.isOpen())
     {
-        glfwPollEvents();
         ImGui_ImplGlfwGL3_NewFrame();
 
         renderer.clear();
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
-        static glm::vec3 translationA(0, 0, 0);
-        static glm::vec3 translationB(1.5, 1.5, 0);
-        static glm::vec3 translationC(-3, -1.2, 0);
+        static glm::vec3 translationA(0, 0, -2);
+        static glm::vec3 translationB(1.5, 1.5, -2);
+        static glm::vec3 translationC(-3, -1.2, -2);
 
-        static ImVec4 colourA = ImVec4(1.0f, 0.0f, 0.0f, 1.00f);
+        static glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100.0f);
+
+        camera.takeInputs(&window);
+        glm::mat4 view = camera.getView();
+
         {        
-            shader.bind();
-            shader.setUniform4f("uColor", colourA.x, colourA.y, colourA.z, colourA.w);
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-            glm::mat4 mvp = proj * view * model;
-            shader.setUniformMat4f("uMVP", mvp);
-            renderer.draw(va, ib, shader);
+            static ImVec4 colourA = ImVec4(1.0f, 0.0f, 0.0f, 1.00f);
+            {        
+                shader.bind();
+                shader.setUniform4f("uColor", colourA.x, colourA.y, colourA.z, colourA.w);
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+                glm::mat4 mvp = proj * view * model;
+                shader.setUniformMat4f("MVP", mvp);
+                renderer.draw(va, ib, shader);
+            }
+
+            ImGui::SliderFloat3("TranslationA", &translationA.x, -10.0f, 10.0f);
+            ImGui::ColorEdit4("ColourA\n", (float*)&colourA);
+
+            static ImVec4 colourB = ImVec4(0.0f, 1.0f, 0.0f, 1.00f);
+            {        
+                shader.bind();
+                shader.setUniform4f("uColor", colourB.x, colourB.y, colourB.z, colourB.w);
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
+                glm::mat4 mvp = proj * view * model;
+                shader.setUniformMat4f("MVP", mvp);
+                renderer.draw(va, ib, shader);
+            }
+
+            ImGui::SliderFloat3("TranslationB", &translationB.x, -10.0f, 10.0f);
+            ImGui::ColorEdit4("ColourB\n", (float*)&colourB);
+
+            static ImVec4 colourC = ImVec4(0.0f, 0.0f, 1.0f, 1.00f);
+            {        
+                shader.bind();
+                shader.setUniform4f("uColor", colourC.x, colourC.y, colourC.z, colourC.w);
+                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationC);
+                glm::mat4 mvp = proj * view * model;
+                shader.setUniformMat4f("MVP", mvp);
+                renderer.draw(va, ib, shader);
+            }
+
+            ImGui::SliderFloat3("TranslationC", &translationC.x, -10.0f, 10.0f);
+            ImGui::ColorEdit4("ColourC\n", (float*)&colourC);
         }
-
-        ImGui::SliderFloat3("TranslationA", &translationA.x, -10.0f, 10.0f);
-        ImGui::ColorEdit4("ColourA", (float*)&colourA);
-        ImGui::Text("");
-
-        static ImVec4 colourB = ImVec4(0.0f, 1.0f, 0.0f, 1.00f);
-        {        
-            shader.bind();
-            shader.setUniform4f("uColor", colourB.x, colourB.y, colourB.z, colourB.w);
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-            glm::mat4 mvp = proj * view * model;
-            shader.setUniformMat4f("uMVP", mvp);
-            renderer.draw(va, ib, shader);
-        }
-
-        ImGui::SliderFloat3("TranslationB", &translationB.x, -10.0f, 10.0f);
-        ImGui::ColorEdit4("ColourB", (float*)&colourB);
-        ImGui::Text("");
-
-        static ImVec4 colourC = ImVec4(0.0f, 0.0f, 1.0f, 1.00f);
-        {        
-            shader.bind();
-            shader.setUniform4f("uColor", colourC.x, colourC.y, colourC.z, colourC.w);
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), translationC);
-            glm::mat4 mvp = proj * view * model;
-            shader.setUniformMat4f("uMVP", mvp);
-            renderer.draw(va, ib, shader);
-        }
-
-        ImGui::SliderFloat3("TranslationC", &translationC.x, -10.0f, 10.0f);
-        ImGui::ColorEdit4("ColourC", (float*)&colourC);
-        ImGui::Text("");
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
         ImGui::Render();
         ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
-        glfwSwapBuffers(window.window);
+        glfwSwapBuffers(window.get());
+        glfwPollEvents();
     }
 
 	return 0;

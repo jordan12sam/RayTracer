@@ -23,6 +23,9 @@ Window::Window(const int width, const int height, char* title)
 
 	glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
+
+    glfwSetKeyCallback(window, keyCallback);
+    glfwSetWindowUserPointer(window, this);
 };
 
 Window::~Window()
@@ -31,6 +34,23 @@ Window::~Window()
     ImGui::DestroyContext();
     glfwTerminate();
 };
+
+void Window::keyCallback(GLFWwindow* glWindow, int key, int scancode, int action, int mods)
+{
+    std::cout << "Key press" << std::endl;
+
+    Window* staticWindow = static_cast<Window*>(glfwGetWindowUserPointer(glWindow));
+
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(glWindow, 1);
+    }
+    else if(key >= 0 && key <= 349)
+    {
+        if(action == GLFW_PRESS){staticWindow->keys[key] = true;}
+        if(action == GLFW_RELEASE){staticWindow->keys[key] = false;}
+    }
+}
 
 bool Window::isOpen()
 {

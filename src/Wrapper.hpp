@@ -6,9 +6,7 @@
 #include <iostream>
 #include <cassert>
 
-#define glWrap(x) glClearError();\
-    x;\
-    assert(glLogCall(#x, __FILE__, __LINE__));
+#define glWrap(x) x;
 
 void glClearError();
 
