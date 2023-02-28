@@ -109,8 +109,8 @@ int main(void){
         glClear(GL_DEPTH_BUFFER_BIT);
 
         static glm::vec3 translationA(0, 0, -2);
-        static glm::vec3 translationB(1.5, 1.5, -2);
-        static glm::vec3 translationC(-3, -1.2, -2);
+        static glm::vec3 translationB(1.5, 1.5, -5);
+        static glm::vec3 translationC(-3, -1.2, -3);
 
         static glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100.0f);
 

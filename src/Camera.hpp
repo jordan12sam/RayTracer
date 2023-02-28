@@ -31,6 +31,8 @@ class Camera
             up
         );
 
+        void rotate(glm::vec3 axis);
+
     public:
         Camera(glm::vec3 eye, glm::vec3 forwards, glm::vec3 up);
         void takeInputs(Window* window);
