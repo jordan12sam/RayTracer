@@ -19,7 +19,7 @@ class Camera
     private:
         float step = 0.05f;
 
-        glm::vec3 eye = glm::vec3(0, 0, 0);
+        glm::vec3 eye = glm::vec3(0, 0, 10);
         glm::vec3 forwards = glm::vec3(0, 0, -1);
         glm::vec3 up = glm::vec3(0, 1, 0);
 
@@ -30,6 +30,7 @@ class Camera
         );
 
     public:
+        Camera(glm::vec3 eye, glm::vec3 forwards, glm::vec3 up);
         void takeInputs(Window* window);
         void calculateView();
         inline glm::mat4 getView() {return view;}

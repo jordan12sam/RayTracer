@@ -22,8 +22,8 @@
 #include <cassert>
 
 // define screen size
-const unsigned int SCR_WIDTH = 1280;
-const unsigned int SCR_HEIGHT = 720;
+const unsigned int SCR_WIDTH = 1920;
+const unsigned int SCR_HEIGHT = 1080;
 const float AR = (float)SCR_WIDTH/(float)SCR_HEIGHT;
 
 int main(void){
@@ -36,19 +36,39 @@ int main(void){
         return -1;
     }
 
-    Camera camera;
+    Camera camera(glm::vec3(0, 0, 10), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 
     // define a set of 2d positions + 2d texture coordinates
     float positions[] = {
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f,
+         1.0f, -1.0f,  0.0f,    1.0f, 0.0f,
+         1.0f,  1.0f,  0.0f,    1.0f, 1.0f,
+        -1.0f,  1.0f,  0.0f,    0.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f,
+         1.0f, -1.0f, -1.0f,    1.0f, 0.0f,
+         1.0f,  1.0f, -1.0f,    1.0f, 1.0f,
+        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f
     };
 
     unsigned int indicies[] = {
         0, 1, 2,
-        0, 3, 2
+        0, 3, 2,
+
+        4, 5, 6,
+        4, 7, 8,
+
+        0, 1, 4,
+        1, 4, 5,
+
+        2, 3, 7,
+        3, 7, 8,
+
+        0, 3, 4,
+        3, 4, 8,
+
+        1, 2, 5,
+        2, 5, 6
+    
     };
 
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -63,7 +83,7 @@ int main(void){
     VertexArray va;
     va.addBuffer(vb, layout);
 
-    IndexBuffer ib(indicies, 6);
+    IndexBuffer ib(indicies, 36);
     
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
