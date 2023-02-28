@@ -5,6 +5,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/constants.hpp>
 
 #include "Wrapper.hpp"
 #include "Window.hpp"
@@ -17,7 +18,8 @@
 class Camera
 {
     private:
-        float step = 0.05f;
+        float stepLength = 0.05f;
+        float stepAngle = glm::pi<float>() / 300.0f;
 
         glm::vec3 eye = glm::vec3(0, 0, 10);
         glm::vec3 forwards = glm::vec3(0, 0, -1);
