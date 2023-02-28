@@ -73,6 +73,7 @@ int main(void){
 
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     glWrap(glEnable(GL_BLEND));
+    glWrap(glEnable(GL_DEPTH_TEST))
     
     VertexBuffer vb(positions, 5 * 4 * sizeof(float));
 
