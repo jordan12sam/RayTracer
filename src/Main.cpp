@@ -124,45 +124,23 @@ int main(void){
         camera.takeInputs(&window);
         glm::mat4 view = camera.getView();
 
-        {        
-            static ImVec4 colourA = ImVec4(1.0f, 0.0f, 0.0f, 1.00f);
-            {        
-                shader.bind();
-                shader.setUniform4f("uColor", colourA.x, colourA.y, colourA.z, colourA.w);
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
-                glm::mat4 mvp = proj * view * model;
-                shader.setUniformMat4f("MVP", mvp);
-                renderer.draw(va, ib, shader);
+        shader.bind();
+
+        float n = 30.0f;
+
+        for(float i = 0.0f; i < n; i++)
+        {
+            for(float j = 0.0f; j < n; j++)
+            {
+                for(float k = 0.0f; k < n; k++)
+                {
+                    shader.setUniform4f("uColor", i/n, j/n, k/n, 1.0f);
+                    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3((i - n/2)*10.0f, (j - n/2)*10.0f, (k - n/2)*10.0f));
+                    glm::mat4 mvp = proj * view * model;
+                    shader.setUniformMat4f("MVP", mvp);
+                    renderer.draw(va, ib, shader);
+                }
             }
-
-            ImGui::SliderFloat3("TranslationA", &translationA.x, -10.0f, 10.0f);
-            ImGui::ColorEdit4("ColourA\n", (float*)&colourA);
-
-            static ImVec4 colourB = ImVec4(0.0f, 1.0f, 0.0f, 1.00f);
-            {        
-                shader.bind();
-                shader.setUniform4f("uColor", colourB.x, colourB.y, colourB.z, colourB.w);
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-                glm::mat4 mvp = proj * view * model;
-                shader.setUniformMat4f("MVP", mvp);
-                renderer.draw(va, ib, shader);
-            }
-
-            ImGui::SliderFloat3("TranslationB", &translationB.x, -10.0f, 10.0f);
-            ImGui::ColorEdit4("ColourB\n", (float*)&colourB);
-
-            static ImVec4 colourC = ImVec4(0.0f, 0.0f, 1.0f, 1.00f);
-            {        
-                shader.bind();
-                shader.setUniform4f("uColor", colourC.x, colourC.y, colourC.z, colourC.w);
-                glm::mat4 model = glm::translate(glm::mat4(1.0f), translationC);
-                glm::mat4 mvp = proj * view * model;
-                shader.setUniformMat4f("MVP", mvp);
-                renderer.draw(va, ib, shader);
-            }
-
-            ImGui::SliderFloat3("TranslationC", &translationC.x, -10.0f, 10.0f);
-            ImGui::ColorEdit4("ColourC\n", (float*)&colourC);
         }
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
