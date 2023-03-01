@@ -48,7 +48,12 @@ int main(void){
         -1.0f, -1.0f, -1.0f,    1.0f, 0.0f,
          1.0f, -1.0f, -1.0f,    0.0f, 0.0f,
          1.0f,  1.0f, -1.0f,    0.0f, 1.0f,
-        -1.0f,  1.0f, -1.0f,    1.0f, 1.0f
+        -1.0f,  1.0f, -1.0f,    1.0f, 1.0f,
+
+        -1.0f, -1.0f, -1.0f,    0.0f, 1.0f,
+         1.0f, -1.0f, -1.0f,    1.0f, 1.0f,
+         1.0f,  1.0f, -1.0f,    1.0f, 0.0f,
+        -1.0f,  1.0f, -1.0f,    0.0f, 0.0f
     };
 
     unsigned int indicies[] = {
@@ -64,11 +69,11 @@ int main(void){
         1, 5, 6,
         1, 6, 2,
 
-        3, 2, 7,
-        6, 2, 7,
+        3, 2, 11,
+        10, 2, 11,
 
-        0, 1, 4,
-        1, 4, 5 
+        0, 1, 8,
+        1, 8, 9 
     
     };
 
@@ -76,7 +81,7 @@ int main(void){
     glWrap(glEnable(GL_BLEND));
     glWrap(glEnable(GL_DEPTH_TEST))
     
-    VertexBuffer vb(positions, 5 * 8 * sizeof(float));
+    VertexBuffer vb(positions, 5 * 12 * sizeof(float));
 
     VertexBufferLayout layout;
     layout.push(GL_FLOAT, 3);
