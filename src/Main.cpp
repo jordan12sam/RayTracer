@@ -40,34 +40,35 @@ int main(void){
 
     // define a set of 2d positions + 2d texture coordinates
     float positions[] = {
-        -1.0f, -1.0f,  0.0f,    0.0f, 0.0f,
-         1.0f, -1.0f,  0.0f,    1.0f, 0.0f,
-         1.0f,  1.0f,  0.0f,    1.0f, 1.0f,
-        -1.0f,  1.0f,  0.0f,    0.0f, 1.0f,
-        -1.0f, -1.0f, -1.0f,    0.0f, 0.0f,
-         1.0f, -1.0f, -1.0f,    1.0f, 0.0f,
-         1.0f,  1.0f, -1.0f,    1.0f, 1.0f,
-        -1.0f,  1.0f, -1.0f,    0.0f, 1.0f
+        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f,    1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f,    1.0f, 1.0f,
+        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f,
+        
+        -1.0f, -1.0f, -1.0f,    1.0f, 0.0f,
+         1.0f, -1.0f, -1.0f,    0.0f, 0.0f,
+         1.0f,  1.0f, -1.0f,    0.0f, 1.0f,
+        -1.0f,  1.0f, -1.0f,    1.0f, 1.0f
     };
 
     unsigned int indicies[] = {
         0, 1, 2,
-        0, 3, 2,
+        0, 2, 3,
 
         4, 5, 6,
-        4, 7, 8,
+        4, 6, 7,
+
+        0, 4, 7,
+        0, 3, 7,
+
+        1, 5, 6,
+        1, 6, 2,
+
+        3, 2, 7,
+        6, 2, 7,
 
         0, 1, 4,
-        1, 4, 5,
-
-        2, 3, 7,
-        3, 7, 8,
-
-        0, 3, 4,
-        3, 4, 8,
-
-        1, 2, 5,
-        2, 5, 6
+        1, 4, 5 
     
     };
 
@@ -75,7 +76,7 @@ int main(void){
     glWrap(glEnable(GL_BLEND));
     glWrap(glEnable(GL_DEPTH_TEST))
     
-    VertexBuffer vb(positions, 5 * 4 * sizeof(float));
+    VertexBuffer vb(positions, 5 * 8 * sizeof(float));
 
     VertexBufferLayout layout;
     layout.push(GL_FLOAT, 3);
