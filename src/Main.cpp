@@ -119,14 +119,14 @@ int main(void){
         static glm::vec3 translationB(1.5, 1.5, -5);
         static glm::vec3 translationC(-3, -1.2, -3);
 
-        static glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100.0f);
+        static glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100000.0f);
 
         camera.takeInputs(&window);
         glm::mat4 view = camera.getView();
 
         shader.bind();
 
-        float n = 30.0f;
+        float n = 20.0f;
 
         for(float i = 0.0f; i < n; i++)
         {
