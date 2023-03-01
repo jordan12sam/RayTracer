@@ -9,30 +9,35 @@ Camera::Camera(glm::vec3 eyeIn, glm::vec3 forwardsIn, glm::vec3 upIn)
 
 void Camera::takeInputs(Window* window)
 {
+    float millis = 1000.0f / ImGui::GetIO().Framerate;
+    float velocity = stepLength * millis;
+
+    std::cout << millis << std::endl;
+
     bool* keys = window->getKeys();
     if(keys[GLFW_KEY_W])
     {
-        eye += forwards * stepLength;
+        eye += forwards * velocity;
     }
     if(keys[GLFW_KEY_S])
     {
-        eye += forwards * stepLength * -1.0f;
+        eye += forwards * velocity * -1.0f;
     }
     if(keys[GLFW_KEY_A])
     {
-        eye += glm::cross(forwards, up) * stepLength * -1.0f;
+        eye += glm::cross(forwards, up) * velocity * -1.0f;
     }
     if(keys[GLFW_KEY_D])
     {
-        eye += glm::cross(forwards, up) * stepLength;
+        eye += glm::cross(forwards, up) * velocity;
     }
     if(keys[GLFW_KEY_LEFT_SHIFT])
     {
-        eye += up * stepLength;
+        eye += up * velocity;
     }
     if(keys[GLFW_KEY_LEFT_CONTROL])
     {
-        eye += up * stepLength * -1.0f;
+        eye += up * velocity * -1.0f;
     }
     if(keys[GLFW_KEY_UP])
     {
@@ -63,7 +68,10 @@ void Camera::takeInputs(Window* window)
 
 void Camera::rotate(glm::vec3 axis)
 {
-    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), stepAngle, axis);
+    float millis = 1000.0f / ImGui::GetIO().Framerate;
+    float angularVelocity = stepAngle * millis;
+
+    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), angularVelocity, axis);
     forwards = glm::vec3(rotation * glm::vec4(forwards, 0.0f));
     up = glm::vec3(rotation * glm::vec4(up, 0.0f));
 }

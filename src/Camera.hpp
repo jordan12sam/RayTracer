@@ -14,12 +14,13 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <chrono>
 
 class Camera
 {
     private:
-        float stepLength = 0.05f;
-        float stepAngle = glm::pi<float>() / 300.0f;
+        float stepLength = 0.02f;
+        float stepAngle = glm::pi<float>() / 2000.0f;
 
         glm::vec3 eye = glm::vec3(0, 0, 10);
         glm::vec3 forwards = glm::vec3(0, 0, -1);
