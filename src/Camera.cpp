@@ -12,8 +12,6 @@ void Camera::takeInputs(Window* window)
     float millis = 1000.0f / ImGui::GetIO().Framerate;
     float velocity = stepLength * millis;
 
-    std::cout << millis << std::endl;
-
     bool* keys = window->getKeys();
     if(keys[GLFW_KEY_W])
     {
