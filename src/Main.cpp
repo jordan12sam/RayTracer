@@ -139,22 +139,11 @@ int main(void){
 
         shader.bind();
 
-        float n = 20.0f;
-
-        for(float i = 0.0f; i < n; i++)
-        {
-            for(float j = 0.0f; j < n; j++)
-            {
-                for(float k = 0.0f; k < n; k++)
-                {
-                    shader.setUniform4f("uColor", i/n, j/n, k/n, 1.0f);
-                    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3((i - n/2)*10.0f, (j - n/2)*10.0f, (k - n/2)*10.0f));
-                    glm::mat4 mvp = proj * view * model;
-                    shader.setUniformMat4f("MVP", mvp);
-                    renderer.draw(va, ib, shader);
-                }
-            }
-        }
+        shader.setUniform4f("uColor", 1.0f, 0.0f, 0.0f, 1.0f);
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 mvp = proj * view * model;
+        shader.setUniformMat4f("MVP", mvp);
+        renderer.draw(va, ib, shader);
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
