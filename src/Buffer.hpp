@@ -6,6 +6,7 @@
 #include "Wrapper.hpp"
 
 #include <iostream>
+#include <vector>
 
 class Buffer
 {
@@ -27,7 +28,7 @@ class IndexBuffer: public Buffer
         unsigned int count;
         virtual unsigned int getType() const;
     public:
-        IndexBuffer(const unsigned int* data, unsigned int count);
+        IndexBuffer(const std::vector<int> data, unsigned int count);
         unsigned int getCount() const;
 };
 
@@ -36,5 +37,5 @@ class VertexBuffer: public Buffer
     private:
         virtual unsigned int getType() const;
     public:
-        VertexBuffer(const void* data, unsigned int size);
+        VertexBuffer(const std::vector<float> data, unsigned int size);
 };

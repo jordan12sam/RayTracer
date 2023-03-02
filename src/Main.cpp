@@ -20,6 +20,7 @@
 #include <string>
 #include <sstream>
 #include <cassert>
+#include <vector>
 
 // define screen size
 const unsigned int SCR_WIDTH = 1920;
@@ -39,24 +40,24 @@ int main(void){
     Camera camera(glm::vec3(0, 0, 10), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 
     // define a set of 2d positions + 2d texture coordinates
-    float positions[] = {
-        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f,    1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f,    1.0f, 1.0f,
-        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f,
-        
-        -1.0f, -1.0f, -1.0f,    1.0f, 0.0f,
-         1.0f, -1.0f, -1.0f,    0.0f, 0.0f,
-         1.0f,  1.0f, -1.0f,    0.0f, 1.0f,
-        -1.0f,  1.0f, -1.0f,    1.0f, 1.0f,
+    float positions[][5] = {
+        {-1.0f, -1.0f,  1.0f,    0.0f, 0.0f},
+        { 1.0f, -1.0f,  1.0f,    1.0f, 0.0f},
+        { 1.0f,  1.0f,  1.0f,    1.0f, 1.0f},
+        {-1.0f,  1.0f,  1.0f,    0.0f, 1.0f},
 
-        -1.0f, -1.0f, -1.0f,    0.0f, 1.0f,
-         1.0f, -1.0f, -1.0f,    1.0f, 1.0f,
-         1.0f,  1.0f, -1.0f,    1.0f, 0.0f,
-        -1.0f,  1.0f, -1.0f,    0.0f, 0.0f
+        {-1.0f, -1.0f, -1.0f,    1.0f, 0.0f},
+        { 1.0f, -1.0f, -1.0f,    0.0f, 0.0f},
+        { 1.0f,  1.0f, -1.0f,    0.0f, 1.0f},
+        {-1.0f,  1.0f, -1.0f,    1.0f, 1.0f},
+
+        {-1.0f, -1.0f, -1.0f,    0.0f, 1.0f},
+        { 1.0f, -1.0f, -1.0f,    1.0f, 1.0f},
+        { 1.0f,  1.0f, -1.0f,    1.0f, 0.0f},
+        {-1.0f,  1.0f, -1.0f,    0.0f, 0.0f}
     };
 
-    unsigned int indicies[] = {
+    unsigned int baseIndicies[] = {
         0, 1, 2,
         0, 2, 3,
 
@@ -77,11 +78,27 @@ int main(void){
     
     };
 
+    std::vector<float> vertices;
+    std::vector<int> indicies;
+
+    for(int i = 0; i < sizeof(positions)/sizeof(positions[0]); i++)
+    {
+        for(int j = 0; j < sizeof(positions[0])/sizeof(positions[0][0]); j++)
+        {
+            vertices.push_back(positions[i][j]);
+        }
+    }
+
+    for(int i = 0; i < sizeof(baseIndicies)/sizeof(baseIndicies[0]); i++)
+    {
+        indicies.push_back(baseIndicies[i]);
+    }
+
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     glWrap(glEnable(GL_BLEND));
     glWrap(glEnable(GL_DEPTH_TEST))
     
-    VertexBuffer vb(positions, 5 * 12 * sizeof(float));
+    VertexBuffer vb(vertices, 5 * 12 * sizeof(float));
 
     VertexBufferLayout layout;
     layout.push(GL_FLOAT, 3);
