@@ -105,9 +105,12 @@ int main(void){
     {        
         for(int i = 0; i < sizeof(positions)/sizeof(positions[0]); i++)
         {
+            glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(k*10.0f, k*10.0f, k*10.0f));
+            glm::vec3 translatedPositions = glm::vec3(translation * glm::vec4(positions[i][0], positions[i][1], positions[i][2], 1.0f));
+
             for(int j = 0; j < sizeof(positions[0])/sizeof(positions[0][0]); j++)
             {
-                vertices.push_back(positions[i][j] + (k * 3.0f));
+                vertices.push_back(translatedPositions[j]);
             }
 
             for(int j = 0; j < sizeof(textures[0])/sizeof(textures[0][0]); j++)
