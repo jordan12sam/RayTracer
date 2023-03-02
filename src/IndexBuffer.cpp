@@ -1,12 +1,12 @@
 #include "Buffer.hpp"
 
-IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count)
+IndexBuffer::IndexBuffer(const std::vector<int> data, unsigned int count)
     : count(count)
 {
     type = getType();
     glWrap(glGenBuffers(1, &rendererID));
     this->bind();
-    glWrap(glBufferData(type, count * sizeof(unsigned int), data, GL_STATIC_DRAW));
+    glWrap(glBufferData(type, count * sizeof(unsigned int), &data[0], GL_STATIC_DRAW));
 }
 
 unsigned int IndexBuffer::getType() const

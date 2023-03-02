@@ -20,6 +20,8 @@
 #include <string>
 #include <sstream>
 #include <cassert>
+#include <vector>
+#include <cmath>
 
 // define screen size
 const unsigned int SCR_WIDTH = 1920;
@@ -38,25 +40,59 @@ int main(void){
 
     Camera camera(glm::vec3(0, 0, 10), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 
-    // define a set of 2d positions + 2d texture coordinates
-    float positions[] = {
-        -1.0f, -1.0f,  1.0f,    0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f,    1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f,    1.0f, 1.0f,
-        -1.0f,  1.0f,  1.0f,    0.0f, 1.0f,
-        
-        -1.0f, -1.0f, -1.0f,    1.0f, 0.0f,
-         1.0f, -1.0f, -1.0f,    0.0f, 0.0f,
-         1.0f,  1.0f, -1.0f,    0.0f, 1.0f,
-        -1.0f,  1.0f, -1.0f,    1.0f, 1.0f,
+    // define a set of 3d positions / 3d colours / 2d textures
+    float positions[][3] = {
+        {-1.0f, -1.0f,  1.0f},
+        { 1.0f, -1.0f,  1.0f},
+        { 1.0f,  1.0f,  1.0f},
+        {-1.0f,  1.0f,  1.0f},
 
-        -1.0f, -1.0f, -1.0f,    0.0f, 1.0f,
-         1.0f, -1.0f, -1.0f,    1.0f, 1.0f,
-         1.0f,  1.0f, -1.0f,    1.0f, 0.0f,
-        -1.0f,  1.0f, -1.0f,    0.0f, 0.0f
+        {-1.0f, -1.0f, -1.0f},
+        { 1.0f, -1.0f, -1.0f},
+        { 1.0f,  1.0f, -1.0f},
+        {-1.0f,  1.0f, -1.0f},
+
+        {-1.0f, -1.0f, -1.0f},
+        { 1.0f, -1.0f, -1.0f},
+        { 1.0f,  1.0f, -1.0f},
+        {-1.0f,  1.0f, -1.0f}
     };
 
-    unsigned int indicies[] = {
+    float colours[][4] = {
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f},
+        {0.0f, 0.0f,  0.0f, 1.0f}
+    };
+
+    float textures[][2] = {
+        {0.0f, 0.0f},
+        {1.0f, 0.0f},
+        {1.0f, 1.0f},
+        {0.0f, 1.0f},
+
+        {1.0f, 0.0f},
+        {0.0f, 0.0f},
+        {0.0f, 1.0f},
+        {1.0f, 1.0f},
+
+        {0.0f, 1.0f},
+        {1.0f, 1.0f},
+        {1.0f, 0.0f},
+        {0.0f, 0.0f}
+    };
+
+    unsigned int baseIndicies[] = {
         0, 1, 2,
         0, 2, 3,
 
@@ -77,20 +113,71 @@ int main(void){
     
     };
 
+    int vecCount = sizeof(positions)/sizeof(positions[0]);
+    int vecLength = sizeof(positions[0])/sizeof(positions[0][0])
+                    + sizeof(colours[0])/sizeof(colours[0][0])
+                    + sizeof(textures[0])/sizeof(textures[0][0]);
+
+    std::vector<float> vertices;
+    std::vector<int> indicies;
+    int n = 5;
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            for(int k = 0; k < n; k++)
+            {
+                // For each vector
+                for(int vecIndex = 0; vecIndex < vecCount; vecIndex++)
+                {
+                    // Translate the position coordinates
+                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3((i - n/2)*10.0f, (j - n/2)*10.0f, (k - n/2)*10.0f));
+                    glm::vec3 translatedPositions = glm::vec3(glm::vec4(positions[i][0], positions[i][1], positions[i][2], 1.0f) * translation);
+
+                    // Push position coordinates
+                    for(int coordIndex = 0; coordIndex < sizeof(positions[0])/sizeof(positions[0][0]); coordIndex++)
+                    {
+                        vertices.push_back(translatedPositions[coordIndex]);
+                    }
+
+                    // Push colour coordinates
+                    vertices.push_back((float)i/(float)n);
+                    vertices.push_back((float)j/(float)n);
+                    vertices.push_back((float)k/(float)n);
+
+                    // Push texture coordinates
+                    for(int coordIndex = 0; coordIndex < sizeof(textures[0])/sizeof(textures[0][0]); coordIndex++)
+                    {
+                        vertices.push_back(textures[vecIndex][coordIndex]);
+                    }
+                }
+
+                // Push index
+                for(int index = 0; index < sizeof(baseIndicies)/sizeof(baseIndicies[0]); index++)
+                {
+                    vertices.push_back(baseIndicies[index] * ((i * pow(n, 2) + j*n + k) + 1));
+                }
+            }
+
+        }
+    }
+
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     glWrap(glEnable(GL_BLEND));
     glWrap(glEnable(GL_DEPTH_TEST))
     
-    VertexBuffer vb(positions, 5 * 12 * sizeof(float));
+    VertexBuffer vb(vertices, vecCount * vecLength * pow(n, 3) * sizeof(float));
 
     VertexBufferLayout layout;
     layout.push(GL_FLOAT, 3);
+    layout.push(GL_FLOAT, 4);
     layout.push(GL_FLOAT, 2);
 
     VertexArray va;
     va.addBuffer(vb, layout);
 
-    IndexBuffer ib(indicies, 36);
+    IndexBuffer ib(indicies, indicies.size());
     
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
@@ -106,6 +193,9 @@ int main(void){
 
     Renderer renderer;
 
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100000.0f);
+
     // render loop
     while (window.isOpen())
     {
@@ -115,29 +205,14 @@ int main(void){
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        static glm::mat4 proj = glm::perspective(45.0f, (float)SCR_WIDTH/(float)SCR_HEIGHT, 1.0f, 100000.0f);
-
         camera.takeInputs(&window);
         glm::mat4 view = camera.getView();
 
         shader.bind();
 
-        float n = 20.0f;
-
-        for(float i = 0.0f; i < n; i++)
-        {
-            for(float j = 0.0f; j < n; j++)
-            {
-                for(float k = 0.0f; k < n; k++)
-                {
-                    shader.setUniform4f("uColor", i/n, j/n, k/n, 1.0f);
-                    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3((i - n/2)*10.0f, (j - n/2)*10.0f, (k - n/2)*10.0f));
-                    glm::mat4 mvp = proj * view * model;
-                    shader.setUniformMat4f("MVP", mvp);
-                    renderer.draw(va, ib, shader);
-                }
-            }
-        }
+        glm::mat4 mvp = proj * view * model;
+        shader.setUniformMat4f("MVP", mvp);
+        renderer.draw(va, ib, shader);
         
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
