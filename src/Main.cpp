@@ -97,30 +97,38 @@ int main(void){
 
     std::vector<float> vertices;
     std::vector<int> indicies;
+    int n = 5;
 
-    for(int i = 0; i < sizeof(positions)/sizeof(positions[0]); i++)
-    {
-        for(int j = 0; j < sizeof(positions[0])/sizeof(positions[0][0]); j++)
+    //glm::mat4 translation = glm::translate 
+
+    for(int k = 0; k < n; k++)
+    {        
+        for(int i = 0; i < sizeof(positions)/sizeof(positions[0]); i++)
         {
-            vertices.push_back(positions[i][j]);
+            for(int j = 0; j < sizeof(positions[0])/sizeof(positions[0][0]); j++)
+            {
+                vertices.push_back(positions[i][j] + (k * 3.0f));
+            }
+
+            for(int j = 0; j < sizeof(textures[0])/sizeof(textures[0][0]); j++)
+            {
+                vertices.push_back(textures[i][j]);
+            }
         }
 
-        for(int j = 0; j < sizeof(textures[0])/sizeof(textures[0][0]); j++)
+        for(int i = 0; i < sizeof(baseIndicies)/sizeof(baseIndicies[0]); i++)
         {
-            vertices.push_back(textures[i][j]);
+            indicies.push_back(baseIndicies[i] + (k * sizeof(positions)/sizeof(positions[0])));
         }
-    }
-
-    for(int i = 0; i < sizeof(baseIndicies)/sizeof(baseIndicies[0]); i++)
-    {
-        indicies.push_back(baseIndicies[i]);
     }
 
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     glWrap(glEnable(GL_BLEND));
     glWrap(glEnable(GL_DEPTH_TEST))
+
+    std::cout << indicies.size()/36 << std::endl;
     
-    VertexBuffer vb(vertices, 5 * 12 * sizeof(float));
+    VertexBuffer vb(vertices, vertices.size() * sizeof(float));
 
     VertexBufferLayout layout;
     layout.push(GL_FLOAT, 3);
@@ -129,7 +137,7 @@ int main(void){
     VertexArray va;
     va.addBuffer(vb, layout);
 
-    IndexBuffer ib(indicies, 36);
+    IndexBuffer ib(indicies, indicies.size());
     
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
