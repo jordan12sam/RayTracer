@@ -97,39 +97,45 @@ int main(void){
 
     std::vector<float> vertices;
     std::vector<int> indicies;
-    int n = 5;
+    int n = 65;
+    int counter = 0;
 
     //glm::mat4 translation = glm::translate 
+    for(int width = 0; width < n; width++)
+    {  
+        for(int height = 0; height < n; height++)
+        {    
+            for(int depth = 0; depth < n; depth++)
+            {        
+                for(int vertexIndex = 0; vertexIndex < sizeof(positions)/sizeof(positions[0]); vertexIndex++)
+                {
+                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3((width - n/2)*25.0f, (height - n/2)*25.0f, (depth - n/2)*25.0f));
+                    glm::vec3 translatedPositions = glm::vec3(translation * glm::vec4(positions[vertexIndex][0], positions[vertexIndex][1], positions[vertexIndex][2], 1.0f));
 
-    for(int k = 0; k < n; k++)
-    {        
-        for(int i = 0; i < sizeof(positions)/sizeof(positions[0]); i++)
-        {
-            glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(k*10.0f, k*10.0f, k*10.0f));
-            glm::vec3 translatedPositions = glm::vec3(translation * glm::vec4(positions[i][0], positions[i][1], positions[i][2], 1.0f));
+                    for(int coordIndex = 0; coordIndex < sizeof(translatedPositions)/sizeof(translatedPositions[0]); coordIndex++)
+                    {
+                        vertices.push_back(translatedPositions[coordIndex]);
+                    }
 
-            for(int j = 0; j < sizeof(positions[0])/sizeof(positions[0][0]); j++)
-            {
-                vertices.push_back(translatedPositions[j]);
+                    for(int coordIndex = 0; coordIndex < sizeof(textures[0])/sizeof(textures[0][0]); coordIndex++)
+                    {
+                        vertices.push_back(textures[vertexIndex][coordIndex]);
+                    }
+                }
+
+                for(int index = 0; index < sizeof(baseIndicies)/sizeof(baseIndicies[0]); index++)
+                {
+                    indicies.push_back(baseIndicies[index] + ((width*pow(n, 2) + height*n + depth) * sizeof(positions)/sizeof(positions[0])));
+                }
+
+                counter++;
             }
-
-            for(int j = 0; j < sizeof(textures[0])/sizeof(textures[0][0]); j++)
-            {
-                vertices.push_back(textures[i][j]);
-            }
-        }
-
-        for(int i = 0; i < sizeof(baseIndicies)/sizeof(baseIndicies[0]); i++)
-        {
-            indicies.push_back(baseIndicies[i] + (k * sizeof(positions)/sizeof(positions[0])));
         }
     }
 
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     glWrap(glEnable(GL_BLEND));
     glWrap(glEnable(GL_DEPTH_TEST))
-
-    std::cout << indicies.size()/36 << std::endl;
     
     VertexBuffer vb(vertices, vertices.size() * sizeof(float));
 
@@ -141,6 +147,10 @@ int main(void){
     va.addBuffer(vb, layout);
 
     IndexBuffer ib(indicies, indicies.size());
+
+    std::cout << vertices.size()/(sizeof(positions)/sizeof(positions[0])) << std::endl;
+    std::cout << indicies.size()/(sizeof(baseIndicies)/sizeof(baseIndicies[0])) << std::endl;
+    std::cout << counter << std::endl;
     
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
