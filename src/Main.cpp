@@ -40,21 +40,38 @@ int main(void){
     Camera camera(glm::vec3(0, 0, 10), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
 
     // define a set of 2d positions + 2d texture coordinates
-    float positions[][5] = {
-        {-1.0f, -1.0f,  1.0f,    0.0f, 0.0f},
-        { 1.0f, -1.0f,  1.0f,    1.0f, 0.0f},
-        { 1.0f,  1.0f,  1.0f,    1.0f, 1.0f},
-        {-1.0f,  1.0f,  1.0f,    0.0f, 1.0f},
+    float positions[][3] = {
+        {-1.0f, -1.0f,  1.0f},
+        { 1.0f, -1.0f,  1.0f},
+        { 1.0f,  1.0f,  1.0f},
+        {-1.0f,  1.0f,  1.0f},
 
-        {-1.0f, -1.0f, -1.0f,    1.0f, 0.0f},
-        { 1.0f, -1.0f, -1.0f,    0.0f, 0.0f},
-        { 1.0f,  1.0f, -1.0f,    0.0f, 1.0f},
-        {-1.0f,  1.0f, -1.0f,    1.0f, 1.0f},
+        {-1.0f, -1.0f, -1.0f},
+        { 1.0f, -1.0f, -1.0f},
+        { 1.0f,  1.0f, -1.0f},
+        {-1.0f,  1.0f, -1.0f},
 
-        {-1.0f, -1.0f, -1.0f,    0.0f, 1.0f},
-        { 1.0f, -1.0f, -1.0f,    1.0f, 1.0f},
-        { 1.0f,  1.0f, -1.0f,    1.0f, 0.0f},
-        {-1.0f,  1.0f, -1.0f,    0.0f, 0.0f}
+        {-1.0f, -1.0f, -1.0f},
+        { 1.0f, -1.0f, -1.0f},
+        { 1.0f,  1.0f, -1.0f},
+        {-1.0f,  1.0f, -1.0f}
+    };
+
+    float textures[][2] = {
+        {0.0f, 0.0f},
+        {1.0f, 0.0f},
+        {1.0f, 1.0f},
+        {0.0f, 1.0f},
+
+        {1.0f, 0.0f},
+        {0.0f, 0.0f},
+        {0.0f, 1.0f},
+        {1.0f, 1.0f},
+
+        {0.0f, 1.0f},
+        {1.0f, 1.0f},
+        {1.0f, 0.0f},
+        {0.0f, 0.0f}
     };
 
     unsigned int baseIndicies[] = {
@@ -86,6 +103,11 @@ int main(void){
         for(int j = 0; j < sizeof(positions[0])/sizeof(positions[0][0]); j++)
         {
             vertices.push_back(positions[i][j]);
+        }
+
+        for(int j = 0; j < sizeof(textures[0])/sizeof(textures[0][0]); j++)
+        {
+            vertices.push_back(textures[i][j]);
         }
     }
 
