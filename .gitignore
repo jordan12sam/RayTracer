@@ -33,6 +33,7 @@
 
 # imgui.ini
 src/imgui.ini
+res/shaders/imgui.ini
 
 # Build Folder
 build/
