@@ -114,20 +114,8 @@ int main(void){
     std::vector<float> vertices;
     std::vector<int> indicies;
 
-    int n = 7;
-
-    auto fibonnaciSphere = [n](float a)
-    {
-        using namespace std;
-        float nCubed = pow(n, 3.0f);
-        float goldenRatio = (1.0f + pow(5.0f, 0.5f))/2.0f;
-        float theta = 2.0f * M_PI * a / goldenRatio;
-        float phi = acos(1.0f - 2.0f * (a + 0.5f) / nCubed);
-        float x = 20.0f * cos(theta) * sin(phi);
-        float y = 20.0f * sin(theta) * sin(phi);
-        float z = 20.0f * cos(phi);
-        return glm::vec3(x, y, z);
-    };
+    int n = 50;
+    float scale = 10.0f;
 
     //glm::mat4 translation = glm::translate 
     for(int width = 0; width < n; width++)
@@ -137,10 +125,14 @@ int main(void){
             for(int depth = 0; depth < n; depth++)
             {        
                 float cubePosition = width*pow(n, 2) + height*n + depth;
+                float noiseX = (float)(rand() % ((int)scale * 100))/10.0f * pow(-1.0f, rand() % 2);
+                float noiseY = (float)(rand() % ((int)scale * 100))/10.0f * pow(-1.0f, rand() % 2);
+                float noiseZ = (float)(rand() % ((int)scale * 100))/10.0f * pow(-1.0f, rand() % 2);
+                
 
                 for(int vertexIndex = 0; vertexIndex < positionsCount; vertexIndex++)
                 {
-                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), fibonnaciSphere(cubePosition));
+                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), scale * (glm::vec3(width, height, depth) + glm::vec3(noiseX, noiseY, noiseZ) + glm::vec3((float)n / -2.0f)));
                     glm::vec3 translatedPositions = glm::vec3(translation * glm::vec4(positions[vertexIndex][0], positions[vertexIndex][1], positions[vertexIndex][2], 1.0f));
 
                     for(int coordIndex = 0; coordIndex < positionLength; coordIndex++)
@@ -165,11 +157,6 @@ int main(void){
                 }
             }
         }
-    }
-
-    for(int i = 0; i < vertices.size(); i++)
-    {
-        std::cout << vertices[i] << std::endl;
     }
 
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));

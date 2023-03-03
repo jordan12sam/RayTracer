@@ -1,12 +1,5 @@
 #include "Camera.hpp"
 
-Camera::Camera(glm::vec3 eyeIn, glm::vec3 forwardsIn, glm::vec3 upIn)
-{
-    eye = eyeIn;
-    forwards = forwardsIn;
-    up = upIn;
-}
-
 void Camera::takeInputs(Window* window)
 {
     float millis = 1000.0f / ImGui::GetIO().Framerate;

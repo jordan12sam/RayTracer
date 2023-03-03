@@ -35,7 +35,8 @@ class Camera
         void rotate(glm::vec3 axis);
 
     public:
-        Camera(glm::vec3 eye, glm::vec3 forwards, glm::vec3 up);
+        inline Camera(glm::vec3 eye, glm::vec3 forwards, glm::vec3 up)
+        :eye(eye), forwards(forwards), up(up){};
         void takeInputs(Window* window);
         void calculateView();
         inline glm::mat4 getView() {return view;}
