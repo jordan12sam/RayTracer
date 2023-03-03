@@ -21,7 +21,7 @@
 #include <sstream>
 #include <cassert>
 #include <vector>
-#include <cmath>
+#include <math.h>
 
 // define screen size
 const unsigned int SCR_WIDTH = 1920;
@@ -114,7 +114,20 @@ int main(void){
     std::vector<float> vertices;
     std::vector<int> indicies;
 
-    int n = 30;
+    int n = 7;
+
+    auto fibonnaciSphere = [n](float a)
+    {
+        using namespace std;
+        float nCubed = pow(n, 3.0f);
+        float goldenRatio = (1.0f + pow(5.0f, 0.5f))/2.0f;
+        float theta = 2.0f * M_PI * a / goldenRatio;
+        float phi = acos(1.0f - 2.0f * (a + 0.5f) / nCubed);
+        float x = 20.0f * cos(theta) * sin(phi);
+        float y = 20.0f * sin(theta) * sin(phi);
+        float z = 20.0f * cos(phi);
+        return glm::vec3(x, y, z);
+    };
 
     //glm::mat4 translation = glm::translate 
     for(int width = 0; width < n; width++)
@@ -123,9 +136,11 @@ int main(void){
         {    
             for(int depth = 0; depth < n; depth++)
             {        
+                float cubePosition = width*pow(n, 2) + height*n + depth;
+
                 for(int vertexIndex = 0; vertexIndex < positionsCount; vertexIndex++)
                 {
-                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3((width - n/2)*25.0f, (height - n/2)*25.0f, (depth - n/2)*25.0f));
+                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), fibonnaciSphere(cubePosition));
                     glm::vec3 translatedPositions = glm::vec3(translation * glm::vec4(positions[vertexIndex][0], positions[vertexIndex][1], positions[vertexIndex][2], 1.0f));
 
                     for(int coordIndex = 0; coordIndex < positionLength; coordIndex++)
@@ -146,7 +161,7 @@ int main(void){
 
                 for(int index = 0; index < sizeof(baseIndicies)/sizeof(baseIndicies[0]); index++)
                 {
-                    indicies.push_back(baseIndicies[index] + ((width*pow(n, 2) + height*n + depth) * sizeof(positions)/sizeof(positions[0])));
+                    indicies.push_back(baseIndicies[index] + (cubePosition * positionsCount));
                 }
             }
         }
