@@ -37,8 +37,6 @@ Window::~Window()
 
 void Window::keyCallback(GLFWwindow* glWindow, int key, int scancode, int action, int mods)
 {
-    std::cout << "Key press" << std::endl;
-
     Window* staticWindow = static_cast<Window*>(glfwGetWindowUserPointer(glWindow));
 
     if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)

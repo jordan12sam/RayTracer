@@ -21,6 +21,7 @@
 #include <sstream>
 #include <cassert>
 #include <vector>
+#include <cmath>
 
 // define screen size
 const unsigned int SCR_WIDTH = 1920;
@@ -55,6 +56,12 @@ int main(void){
         { 1.0f, -1.0f, -1.0f},
         { 1.0f,  1.0f, -1.0f},
         {-1.0f,  1.0f, -1.0f}
+    };
+
+    float colours[][4] = {
+        {0.0f, 0.0f, 1.0f, 1.0f},
+        {0.0f, 1.0f, 0.0f, 1.0f},
+        {1.0f, 0.0f, 0.0f, 1.0f}
     };
 
     float textures[][2] = {
@@ -95,10 +102,19 @@ int main(void){
     
     };
 
+    int positionsCount = sizeof(positions)/sizeof(positions[0]);
+    int positionLength = sizeof(positions[0])/sizeof(positions[0][0]);
+
+    int coloursCount = sizeof(colours)/sizeof(colours[0]);
+    int colourLength = sizeof(colours[0])/sizeof(colours[0][0]);
+
+    int texturesCount = sizeof(textures)/sizeof(textures[0]);
+    int textureLength = sizeof(textures[0])/sizeof(textures[0][0]);
+
     std::vector<float> vertices;
     std::vector<int> indicies;
-    int n = 65;
-    int counter = 0;
+
+    int n = 30;
 
     //glm::mat4 translation = glm::translate 
     for(int width = 0; width < n; width++)
@@ -107,17 +123,22 @@ int main(void){
         {    
             for(int depth = 0; depth < n; depth++)
             {        
-                for(int vertexIndex = 0; vertexIndex < sizeof(positions)/sizeof(positions[0]); vertexIndex++)
+                for(int vertexIndex = 0; vertexIndex < positionsCount; vertexIndex++)
                 {
                     glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3((width - n/2)*25.0f, (height - n/2)*25.0f, (depth - n/2)*25.0f));
                     glm::vec3 translatedPositions = glm::vec3(translation * glm::vec4(positions[vertexIndex][0], positions[vertexIndex][1], positions[vertexIndex][2], 1.0f));
 
-                    for(int coordIndex = 0; coordIndex < sizeof(translatedPositions)/sizeof(translatedPositions[0]); coordIndex++)
+                    for(int coordIndex = 0; coordIndex < positionLength; coordIndex++)
                     {
                         vertices.push_back(translatedPositions[coordIndex]);
                     }
 
-                    for(int coordIndex = 0; coordIndex < sizeof(textures[0])/sizeof(textures[0][0]); coordIndex++)
+                    for(int coordIndex = 0; coordIndex < colourLength; coordIndex++)
+                    {
+                        vertices.push_back(colours[vertexIndex % coloursCount][coordIndex]);
+                    }
+
+                    for(int coordIndex = 0; coordIndex < textureLength; coordIndex++)
                     {
                         vertices.push_back(textures[vertexIndex][coordIndex]);
                     }
@@ -127,10 +148,13 @@ int main(void){
                 {
                     indicies.push_back(baseIndicies[index] + ((width*pow(n, 2) + height*n + depth) * sizeof(positions)/sizeof(positions[0])));
                 }
-
-                counter++;
             }
         }
+    }
+
+    for(int i = 0; i < vertices.size(); i++)
+    {
+        std::cout << vertices[i] << std::endl;
     }
 
     glWrap(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -141,16 +165,13 @@ int main(void){
 
     VertexBufferLayout layout;
     layout.push(GL_FLOAT, 3);
+    layout.push(GL_FLOAT, 4);
     layout.push(GL_FLOAT, 2);
 
     VertexArray va;
     va.addBuffer(vb, layout);
 
     IndexBuffer ib(indicies, indicies.size());
-
-    std::cout << vertices.size()/(sizeof(positions)/sizeof(positions[0])) << std::endl;
-    std::cout << indicies.size()/(sizeof(baseIndicies)/sizeof(baseIndicies[0])) << std::endl;
-    std::cout << counter << std::endl;
     
     Shader shader("../res/shaders/vertex.shader", "../res/shaders/fragment.shader");
     shader.bind();
@@ -182,7 +203,6 @@ int main(void){
 
         shader.bind();
 
-        shader.setUniform4f("uColor", 1.0f, 0.0f, 0.0f, 1.0f);
         glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 mvp = proj * view * model;
         shader.setUniformMat4f("MVP", mvp);
