@@ -22,6 +22,7 @@
 #include <cassert>
 #include <vector>
 #include <math.h>
+#include <time.h>
 
 // define screen size
 const unsigned int SCR_WIDTH = 1920;
@@ -114,8 +115,8 @@ int main(void){
     std::vector<float> vertices;
     std::vector<int> indicies;
 
-    int n = 50;
-    float scale = 10.0f;
+    int n = 80;
+    float scale = 25.0f;
 
     //glm::mat4 translation = glm::translate 
     for(int width = 0; width < n; width++)
@@ -125,9 +126,15 @@ int main(void){
             for(int depth = 0; depth < n; depth++)
             {        
                 float cubePosition = width*pow(n, 2) + height*n + depth;
-                float noiseX = (float)(rand() % ((int)scale * 100))/10.0f * pow(-1.0f, rand() % 2);
-                float noiseY = (float)(rand() % ((int)scale * 100))/10.0f * pow(-1.0f, rand() % 2);
-                float noiseZ = (float)(rand() % ((int)scale * 100))/10.0f * pow(-1.0f, rand() % 2);
+                auto noiseFunction = [scale]() 
+                {
+                    float noiseScale = scale / 2.0f;
+                    return (float)(rand() % (int)noiseScale) * pow(-1.0f, rand() % 2);
+                };
+                float noiseX = noiseFunction();
+                float noiseY = noiseFunction();
+                float noiseZ = noiseFunction();
+                int hold;
                 
 
                 for(int vertexIndex = 0; vertexIndex < positionsCount; vertexIndex++)
@@ -140,9 +147,11 @@ int main(void){
                         vertices.push_back(translatedPositions[coordIndex]);
                     }
 
+                    glm::vec4 newColours = glm::vec4(width, height, depth, (float)n)/glm::vec4(n);
+                    newColours *= newColours;
                     for(int coordIndex = 0; coordIndex < colourLength; coordIndex++)
                     {
-                        vertices.push_back(colours[vertexIndex % coloursCount][coordIndex]);
+                        vertices.push_back(newColours[coordIndex]);
                     }
 
                     for(int coordIndex = 0; coordIndex < textureLength; coordIndex++)
