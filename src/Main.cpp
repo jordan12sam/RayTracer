@@ -115,31 +115,53 @@ int main(void){
     std::vector<float> vertices;
     std::vector<int> indicies;
 
-    int n = 80;
+    int n = 20;
     float scale = 25.0f;
 
-    //glm::mat4 translation = glm::translate 
+    // Push sky box to buffer
+    for(int index = 0; index < sizeof(baseIndicies)/sizeof(baseIndicies[0]); index++)
+    {
+        std::cout << baseIndicies[index] + (vertices.size() / 9) << std::endl;
+        indicies.push_back(baseIndicies[index] + (vertices.size() / 9));
+    }
+    
+    for(int vertexIndex = 0; vertexIndex < positionsCount; vertexIndex++)
+    {
+        glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(scale * n));
+        glm::vec3 transformedVertex = glm::vec3(scaleMatrix * glm::vec4(positions[vertexIndex][0], positions[vertexIndex][1], positions[vertexIndex][2], 1.0f));
+
+        for(int coordIndex = 0; coordIndex < positionLength; coordIndex++)
+        {
+            vertices.push_back(transformedVertex[coordIndex]);
+        }
+
+        for(int coordIndex = 0; coordIndex < colourLength; coordIndex++)
+        {
+            vertices.push_back(colours[vertexIndex % coloursCount][coordIndex]);
+        }
+
+        for(int coordIndex = 0; coordIndex < textureLength; coordIndex++)
+        {
+            vertices.push_back(textures[vertexIndex][coordIndex]);
+        }
+    }
+
+    // Push cubes to buffer
     for(int width = 0; width < n; width++)
     {  
         for(int height = 0; height < n; height++)
         {    
             for(int depth = 0; depth < n; depth++)
-            {        
-                float cubePosition = width*pow(n, 2) + height*n + depth;
-                auto noiseFunction = [scale]() 
+            {    
+                for(int index = 0; index < sizeof(baseIndicies)/sizeof(baseIndicies[0]); index++)
                 {
-                    float noiseScale = scale / 2.0f;
-                    return (float)(rand() % (int)noiseScale) * pow(-1.0f, rand() % 2);
-                };
-                float noiseX = noiseFunction();
-                float noiseY = noiseFunction();
-                float noiseZ = noiseFunction();
-                int hold;
+                    std::cout << baseIndicies[index] + (vertices.size() / 9) << std::endl;
+                    indicies.push_back(baseIndicies[index] + (vertices.size() / 9));
+                }
                 
-
                 for(int vertexIndex = 0; vertexIndex < positionsCount; vertexIndex++)
                 {
-                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), scale * (glm::vec3(width, height, depth) + glm::vec3(noiseX, noiseY, noiseZ) + glm::vec3((float)n / -2.0f)));
+                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), scale * (glm::vec3(width, height, depth) + glm::vec3((float)n / -2.0f)));
                     glm::vec3 translatedPositions = glm::vec3(translation * glm::vec4(positions[vertexIndex][0], positions[vertexIndex][1], positions[vertexIndex][2], 1.0f));
 
                     for(int coordIndex = 0; coordIndex < positionLength; coordIndex++)
@@ -147,22 +169,15 @@ int main(void){
                         vertices.push_back(translatedPositions[coordIndex]);
                     }
 
-                    glm::vec4 newColours = glm::vec4(width, height, depth, (float)n)/glm::vec4(n);
-                    newColours *= newColours;
                     for(int coordIndex = 0; coordIndex < colourLength; coordIndex++)
                     {
-                        vertices.push_back(newColours[coordIndex]);
+                        vertices.push_back(colours[vertexIndex % coloursCount][coordIndex]);
                     }
 
                     for(int coordIndex = 0; coordIndex < textureLength; coordIndex++)
                     {
                         vertices.push_back(textures[vertexIndex][coordIndex]);
                     }
-                }
-
-                for(int index = 0; index < sizeof(baseIndicies)/sizeof(baseIndicies[0]); index++)
-                {
-                    indicies.push_back(baseIndicies[index] + (cubePosition * positionsCount));
                 }
             }
         }
